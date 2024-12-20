@@ -56,3 +56,7 @@ class itemregistration(models.Model) :
         choices=feel,
         help_text="(구매 후) 만족도를 선택하세요."
     )
+
+    def __str__(self):
+        return self.이름
+    
