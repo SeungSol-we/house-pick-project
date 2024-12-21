@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 from catalog import views
 
@@ -25,4 +25,5 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path('select-conditions/', views.select_conditions, name='select_conditions'),
     path('filter-apartments/', views.filter_apartments, name='filter_apartments'),
+    path('loan/', views.calculate_loan, name='loan'),  # Loan URL을 catalog 뷰로 연결
 ]

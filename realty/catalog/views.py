@@ -164,4 +164,29 @@ def apartment_list(request):
     apartments = Apartment.objects.all()
     return render(request, 'apartment_list.html', {'apartments': apartments})
 
+#대출이자
+from django.shortcuts import render
+from .forms import LoanForm
 
+def calculate_loan(request):
+    if request.method == 'POST':
+        form = LoanForm(request.POST)
+        if form.is_valid():
+            loan_amount = form.cleaned_data['loan_amount']
+            loan_term = form.cleaned_data['loan_term']
+            interest_rate = form.cleaned_data['interest_rate']
+
+            # 월 이자율 계산
+            monthly_interest_rate = interest_rate / 12 / 100
+
+            # 기간 이자 계산 (단리 방식: 사용금액 × 사용기간 × 월이자율)
+            interest = loan_amount * loan_term * monthly_interest_rate
+
+            # 결과 소수점 1자리까지 표시
+            interest = round(interest, 1)
+
+            return render(request, 'result.html', {'interest': interest, 'form': form})
+    else:
+        form = LoanForm()
+
+    return render(request, 'loan_form.html', {'form': form})
