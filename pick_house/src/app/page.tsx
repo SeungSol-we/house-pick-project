@@ -1,11 +1,16 @@
 import Image from "next/image";
+
 import { MoveDown } from 'lucide-react';
 import { House } from 'lucide-react';
 
+import { Button } from "@/components/ui/button"
+
+import Link from 'next/link';
+
 export default function Home() {
   return (
-    <div className="">
-      <div className="w-full h-32 mt-4 text-red-400 flex align-items-center justify-center">
+    <div className="w-full h-{100vh} bg-pink-100 ">
+      <div className="w-full h-32 pt-4 text-red-400 flex align-items-center justify-center">
         <MoveDown size={100}/>
       </div>
       <div className="w-full h-56 flex justify-center">
@@ -15,7 +20,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <p className="w-full h-auto mt-10 text-pink-400 text-5xl flex justify-center tems-center">
+      <p className="w-full h-auto mt-12 text-pink-400 text-5xl flex justify-center tems-center">
         HousePick
       </p>
       <p className="w-full h-auto text-stone-900 text-l flex justify-center tems-center ">
@@ -24,11 +29,18 @@ export default function Home() {
       <p className="w-full h-auto text-stone-900 text-l flex justify-center tems-center font-bold">
         최고의 도우미 서비스
       </p>
-      <div>
-        <button>회원가입</button>
-        <button>로그인</button>
+      <div className="w-full h-32 flex justify-center gap-3 mt-14">
+        <Link href="/sign_up" className="w-32 h-12">
+          <Button variant="outline" className="border-red-400 w-32 h-12 border-2 rounded-3xl text-red-400">
+            회원가입
+          </Button>
+        </Link>
+        <Link href="/sign_in" className="w-32 h-12">
+          <Button variant="outline" className="border-red-400 w-32 h-12 border-2 rounded-3xl text-red-400">
+            로그인
+          </Button>
+        </Link>
       </div>
-      
     </div>
   );
 }
