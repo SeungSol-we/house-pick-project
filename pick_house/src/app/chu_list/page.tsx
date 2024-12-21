@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import Image from 'next/image'
+import Image from 'next/image';
 
 import { Button } from "@/components/ui/button"
 
 
-export default function Sign_Up_Good() {
+export default function Chu_List() {
     let name  = ['앱잼 아파트 1단지', '앱잼 아파트 2단지', '앱잼 아파트 3단지', '앱잼 아파트 4단지', '앱잼 아파트 5단지', '앱잼 아파트 6단지', '앱잼 아파트 7단지',]
     let coment = [
         '아파트, 원룸, 다세대, 신축(2018~)',
@@ -67,7 +67,7 @@ export default function Sign_Up_Good() {
       </div>
       
       <div className="w-full h-24 flex justify-center align-items-center mt-8 bg-white">
-        <Link href="/data_in_1" className="w-[22rem] h-14 flex pt-3">
+        <Link href="/main_page" className="w-[22rem] h-14 flex pt-3">
           <Button variant="destructive" className="bg-[#FF70BA] w-[22rem] h-14 border-2 rounded-[2rem] text-white font-bold hover:bg-[#FF70BA]" >
             다음으로
           </Button>
