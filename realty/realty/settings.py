@@ -123,5 +123,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-import os 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+INSTALLED_APPS += ['corsheaders']
+MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React 또는 다른 프론트엔드 개발 서버 주소
+]
