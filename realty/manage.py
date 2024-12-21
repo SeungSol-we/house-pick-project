@@ -6,11 +6,7 @@ import sys
 
 def main():
     """Run administrative tasks."""
-<<<<<<< Updated upstream:wish_list/manage.py
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'wish_list.settings')
-=======
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'realty.settings')
->>>>>>> Stashed changes:realty/manage.py
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'realty_back.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
