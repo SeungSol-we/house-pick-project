@@ -76,7 +76,7 @@ export default function Main_page() {
                     </div>
                 </div>
             </Link>
-            <Link href="/">
+            <Link href="/check">
                 <div className="w-full h-[5rem] bg-white flex mt-2 rounded-2xl">
                     <div className="m-4 mt-6">
                         <Calculator size={30} color="#C299AB"/>

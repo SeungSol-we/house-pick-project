@@ -25,7 +25,7 @@ export default function Sign_Up() {
         <input className="w-full h-12 mt-2 px-4 text-xs text-red-300 bg-white rounded-full focus:outline-none " type="password" placeholder="여기에 비밀번호를 확인시켜 주세요" />
 
         <div className="w-full h-44 pt-24">
-            <Link href="/sign_up" className="w-32 h-12">
+            <Link href="/sign_up/sign_up_good" className="w-32 h-12">
                 <Button variant="outline" className="border-[#C299AB] w-full h-12 border-2 rounded-3xl text-[#FF70BA] font-extrabold">
                     회원가입하기
                 </Button>
