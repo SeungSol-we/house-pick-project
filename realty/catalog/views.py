@@ -19,11 +19,11 @@ def register(request):
 
         # 비밀번호가 일치하지 않으면
         if password1 != password2:
-            return render(request, 'register.html', {'password_error': '비밀번호가 같지 않습니다.'})
+            return render(request, 'localhost:3000/sign_up', {'password_error': '비밀번호가 같지 않습니다.'})
         
         # 이미 등록된 이메일 확인
         if User.objects.filter(email=email).exists():
-            return render(request, 'register.html', {'email_error': '이미 등록된 이메일입니다.'})
+            return render(request, 'localhost:3000/sign_up', {'email_error': '이미 등록된 이메일입니다.'})
 
         # 새로운 사용자 생성
         user = User.objects.create_user(username=username, password=password1, email=email)
