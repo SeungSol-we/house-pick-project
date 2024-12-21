@@ -13,18 +13,11 @@ def register(request):
 
         # 비밀번호가 일치하지 않으면
         if password1 != password2:
-            messages.error(request, "입력한 비밀번호와 다릅니다.")
-            return redirect('register')
-
-        # 이미 존재하는 사용자명 확인
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "이미 존재하는 사용자명입니다.")
-            return redirect('register')
-
+            return render(request, 'register.html', {'password_error': '비밀번호가 같지 않습니다.'})
+        
         # 이미 등록된 이메일 확인
         if User.objects.filter(email=email).exists():
-            messages.error(request, "이미 등록된 이메일입니다.")
-            return redirect('register')
+            return render(request, 'register.html', {'email_error': '이미 등록된 이메일입니다.'})
 
         # 새로운 사용자 생성
         user = User.objects.create_user(username=username, password=password1, email=email)
@@ -42,17 +35,16 @@ from django.contrib import messages
 
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, email=email, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, "Logged in successfully!")
+            messages.success(request, "로그인에 성공했습니다!")
             return redirect('home')  # 홈 페이지로 리다이렉트
         else:
-            messages.error(request, "Invalid username or password!")
-            return redirect('login')
+            return render(request, 'login.html', {'input_error': '이메일 또는 비밀번호를 확인해주세요요'})
 
     return render(request, 'login.html')
 
@@ -61,6 +53,6 @@ from django.contrib.auth import logout
 
 def user_logout(request):
     logout(request)
-    messages.success(request, "Logged out successfully!")
+    messages.success(request, "로그아웃에 성공했습니다.")
     return redirect('login')
 
