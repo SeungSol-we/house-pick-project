@@ -1,11 +1,12 @@
-import Image from "next/image";
-
 import { MoveDown } from 'lucide-react';
 import { House } from 'lucide-react';
 
 import { Button } from "@/components/ui/button"
 
 import Link from 'next/link';
+
+import { Rubik } from 'next/font/google'
+const neuton = Rubik({ weight: ['400'],}) 
 
 export default function Home() {
   return (
@@ -20,9 +21,12 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <p className="w-full h-auto mt-12 text-pink-400 text-5xl flex justify-center tems-center">
-        HousePick
-      </p>
+      <div className={neuton.className}>
+        <p className="w-full h-auto mt-12 text-pink-400 text-5xl flex justify-center tems-center">
+          HousePick
+        </p>
+      </div>
+      
       <p className="w-full h-auto text-stone-900 text-l flex justify-center tems-center ">
         부동산 초보인 당신을 위한
       </p>
