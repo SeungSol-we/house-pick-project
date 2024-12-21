@@ -10,17 +10,14 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">
-      <div className="w-full h-32 pt-4 text-[#C299AB] flex align-items-center justify-center">
-        <MoveDown size={100}/>
-      </div>
-      <div className="w-full h-56 flex justify-center">
-        <div className="rounded-full w-56 h-56 border-[#C299AB] border-4 flex justify-center">
-          <div className="m-6">
-            <House size={150} color="hotpink" />
-          </div>
+      <div className="w-full h-56  flex justify-center pt-28">
+        <div className="rounded-full bg-[#FFE5F2] w-[35rem] h-[23rem] flex justify-center align-items-center">
+          <div className="rounded-full bg-[#FFEFF7] w-[10rem] h-[10rem] flex justify-center ">
+            
+          </div> 
         </div>
       </div>
-      <p className="w-full h-auto mt-12 text-pink-400 text-5xl flex justify-center tems-center">
+      <p className="w-full h-auto mt-12 text-pink-400 text-5xl flex justify-center align-items-center">
         HousePick
       </p>
       <p className="w-full h-auto text-stone-900 text-l flex justify-center tems-center ">
