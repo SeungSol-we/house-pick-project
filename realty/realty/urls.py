@@ -20,7 +20,7 @@ from django.urls import include, path
 from catalog import views
 
 urlpatterns = [
-    path('register/', views.register, name='register'),
+    path('localhost:3000/sign_up', views.register, name='register'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('select-conditions/', views.select_conditions, name='select_conditions'),
