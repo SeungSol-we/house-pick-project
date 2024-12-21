@@ -5,15 +5,15 @@ import { Button } from "@/components/ui/button"
 
 
 export default function Chu_List() {
-    let name  = ['앱잼 아파트 1단지', '앱잼 아파트 2단지', '앱잼 아파트 3단지', '앱잼 아파트 4단지', '앱잼 아파트 5단지', '앱잼 아파트 6단지', '앱잼 아파트 7단지',]
+    let name  = ['역삼래미안', '한강타운', 'DMC롯데캐슬퍼스', '상도롯데캐슬파크엘', '우림루미아트아파트', '북한산더샵', '신내글로리움',]
     let coment = [
-        '아파트, 원룸, 다세대, 신축(2018~)',
-        '아파트, 원룸, 다세대, 신축(2022~)',
-        '아파트, 원룸, 다세대, 신축(2021~)',
-        '아파트, 원룸, 다세대, 신축(2019~)',
-        '아파트, 원룸, 다세대, 신축(2020~)',
-        '아파트, 원룸, 다세대, 신축(2023~)',
-        '아파트, 원룸, 다세대, 신축(2022~)',
+        '아파트, 10평, 다세대, 신축(2018~)',
+        '아파트, 11평, 다세대, 신축(2022~)',
+        '아파트, 8평, 다세대, 신축(2021~)',
+        '아파트, 12평, 다세대, 신축(2019~)',
+        '아파트, 6평, 다세대, 신축(2020~)',
+        '아파트, 8평, 다세대, 신축(2023~)',
+        '아파트, 12평, 다세대, 신축(2022~)',
     ]
     let date = [
         '2018년 7월',
@@ -25,13 +25,13 @@ export default function Chu_List() {
         '2022년 8월',
     ]
     let price = [
-        '525/40',
-        '492/30',
-        '498/42',
-        '513/39',
-        '537/35',
-        '462/41',
-        '556/35',  
+        '6000/80',
+        '6033/50',
+        '5033/50',
+        '7033/80',
+        '9000/70',
+        '10000/84',
+        '4000/30',  
     ]
 
 
@@ -63,10 +63,14 @@ export default function Chu_List() {
                 </div>       
             ))
         }
+        <div className='w-full h-auto flex justify-center mt-4'>
+            <p className='text-sm font-bold text-[#C299AB]'>보증금과 월세는 만 원 단위예요</p>
+        </div>
+        
       
       </div>
       
-      <div className="w-full h-24 flex justify-center align-items-center mt-8 bg-white">
+      <div className="w-full h-24 flex justify-center align-items-center mt-4 bg-white">
         <Link href="/main_page" className="w-[22rem] h-14 flex pt-3">
           <Button variant="destructive" className="bg-[#FF70BA] w-[22rem] h-14 border-2 rounded-[2rem] text-white font-bold hover:bg-[#FF70BA]" >
             다음으로
