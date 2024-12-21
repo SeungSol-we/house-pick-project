@@ -67,7 +67,7 @@ export default function Chu_List() {
       </div>
       
       <div className="w-full h-24 flex justify-center align-items-center mt-8 bg-white">
-        <Link href="/data_in_1" className="w-[22rem] h-14 flex pt-3">
+        <Link href="/main_page" className="w-[22rem] h-14 flex pt-3">
           <Button variant="destructive" className="bg-[#FF70BA] w-[22rem] h-14 border-2 rounded-[2rem] text-white font-bold hover:bg-[#FF70BA]" >
             다음으로
           </Button>
