@@ -20,9 +20,9 @@ export default function Sign_Up_Good() {
           </div> 
         </div>
       </div>
-      <div className="w-full h-32 flex justify-center mt-72">
-        <Link href="/sign_up" className="w-[22rem] h-14">
-          <Button variant="destructive" className="bg-[#FF70BA] w-[22rem] h-14 border-2 rounded-[2rem] text-white">
+      <div className="w-full h-32 flex justify-center mt-[17rem]">
+        <Link href="/data_in_1" className="w-[22rem] h-14">
+          <Button variant="destructive" className="bg-[#FF70BA] w-[22rem] h-14 border-2 rounded-[2rem] text-white font-bold hover:bg-[#FF70BA]" >
             다음으로
           </Button>
         </Link>

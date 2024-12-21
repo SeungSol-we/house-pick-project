@@ -31,12 +31,12 @@ export default function Home() {
       </p>
       <div className="w-full h-32 flex justify-center gap-3 mt-14">
         <Link href="/sign_up" className="w-32 h-12">
-          <Button variant="outline" className="border-red-400 w-32 h-12 border-2 rounded-3xl text-red-400">
+          <Button variant="outline" className="border-[#C299AB] w-32 h-12 border-2 rounded-3xl text-[#FF70BA] font-bold">
             회원가입
           </Button>
         </Link>
         <Link href="/sign_in" className="w-32 h-12">
-          <Button variant="outline" className="border-red-400 w-32 h-12 border-2 rounded-3xl text-red-400">
+          <Button variant="outline" className="border-[#C299AB] w-32 h-12 border-2 rounded-3xl text-[#FF70BA] font-bold">
             로그인
           </Button>
         </Link>

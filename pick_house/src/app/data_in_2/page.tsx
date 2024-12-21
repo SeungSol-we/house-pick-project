@@ -27,99 +27,48 @@ import {
  
 const wol = [
   {
-    value: "월세",
-    label: "월세",
+    value: "남향",
+    label: "남향",
   },
   {
-    value: "전세",
-    label: "전세",
+    value: "북향",
+    label: "북향",
   },
   {
-    value: "매매",
-    label: "매매",
+    value: "동향",
+    label: "동향",
+  },
+  {
+    value: "서향",
+    label: "서향",
   },
 ]
 
 const person = [
   {
-    value: "1인가구",
-    label: "1인가구",
+    value: "상관없음",
+    label: "상관없음",
   },
   {
-    value: "2인가구",
-    label: "2인가구",
+    value: "신축",
+    label: "신축",
   },
   {
-    value: "3인가구",
-    label: "3인가구",
-  },
-  {
-    value: "4인가구",
-    label: "4인가구",
-  },
-  {
-    value: "5인가구",
-    label: "5인가구",
+    value: "구축",
+    label: "구축",
   },
 ]
 
 const region = [
   {
-    value: "서울",
-    label: "서울",
+    value: "아파트",
+    label: "아파트",
   },
   {
-    value: "대전",
-    label: "대전",
+    value: "주택",
+    label: "주택",
   },
-  {
-    value: "세종",
-    label: "세종",
-  },
-  {
-    value: "대구",
-    label: "대구",
-  },
-  {
-    value: "울산",
-    label: "울산",
-  },
-  {
-    value: "부산",
-    label: "부산",
-  },
-  {
-    value: "광주",
-    label: "광주",
-  },
-  {
-    value: "경기도",
-    label: "경기도",
-  },
-  {
-    value: "강원도",
-    label: "강원도",
-  },
-  {
-    value: "경상북도",
-    label: "경상북도",
-  },
-  {
-    value: "충청남도",
-    label: "충청남도",
-  },
-  {
-    value: "전라북도",
-    label: "전라북도",
-  },
-  {
-    value: "경상남도",
-    label: "경상남도",
-  },
-  {
-    value: "전라남도",
-    label: "전라남도",
-  },
+  
 ]
 
 
@@ -140,7 +89,7 @@ export default function Data_1() {
                 <p className="w-auto h-auto text-3xl font-bold">정보를 입력해주세요</p>
                 <p className="w-full h-auto mt-2 text-xs">해당 정보를 바탕으로 회원님께 딱 맞는 집을 분석해요</p>
             
-                <p className="w-full h-auto mt-4 text-base font-semibold ">월세/전세/매매 중 무엇인가요?</p>
+                <p className="w-full h-auto mt-4 text-base font-semibold ">향 방향은 어떤 것을 선호하시나요?</p>
                 <Popover open={open} onOpenChange={setOpen}>
                     <PopoverTrigger asChild>
                         <Button
@@ -151,13 +100,13 @@ export default function Data_1() {
                         >
                         {value
                             ? wol.find((wol) => wol.value === value)?.label
-                            : "월세"}
+                            : "남향"}
                         <ChevronsUpDown className="opacity-50" />
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[300px] p-0">
                         <Command>
-                        <CommandInput placeholder="검색 임대종류..." />
+                        <CommandInput placeholder="검색 향 방향..." />
                         <CommandList>
                             <CommandEmpty>No wol found.</CommandEmpty>
                             <CommandGroup>
@@ -184,9 +133,9 @@ export default function Data_1() {
                         </Command>
                     </PopoverContent>
                     </Popover>
-                    <p className="w-[310px] h-auto mt-2 text-[11px] text-[#C299AB]">월세는 매월 돈을 지급하고, 전세는 보증금을 맡기고 거주하며, 매매는 주택 소유권을 완전히 취득하는 방식이에요</p>
+                    <p className="w-[310px] h-auto mt-2 text-[11px] text-[#C299AB]">남향은 일조량이 많고 따뜻하며, 북향은 햇빛이 적고 시원하고, 동향은 아침 햇살이 좋으며, 서향은 오후 햇빛과 저녁 노을을ㅤ 즐길 수 있어요. 대부분 "남향"을 선호해요.</p>
 
-                    <p className="w-full h-auto mt-8 text-base font-semibold ">몇인 가구가 살 예정인가요?</p>
+                    <p className="w-full h-auto mt-8 text-base font-semibold ">신축/구축 선호 여부는?</p>
                     <Popover open={open2} onOpenChange={setOpen2}>
                     <PopoverTrigger asChild>
                         <Button
@@ -197,13 +146,13 @@ export default function Data_1() {
                         >
                         {value2
                             ? person.find((person) => person.value === value2)?.label
-                            : "1인가구"}
+                            : "상관없음"}
                         <ChevronsUpDown className="opacity-50" />
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-[300px] p-0">
                         <Command>
-                        <CommandInput placeholder="검색 임대종류..." />
+                        <CommandInput placeholder="검색 지어진 시기..." />
                         <CommandList>
                             <CommandEmpty>No person found.</CommandEmpty>
                             <CommandGroup>
@@ -232,7 +181,7 @@ export default function Data_1() {
                     </Popover>
 
 
-                    <p className="w-full h-auto mt-6 text-base font-semibold ">선호지역은 무엇인가요?</p>
+                    <p className="w-full h-auto mt-6 text-base font-semibold ">건물 유형 여부는?</p>
                     <Popover open={open3} onOpenChange={setOpen3}>
                     <PopoverTrigger asChild>
                         <Button
@@ -243,7 +192,7 @@ export default function Data_1() {
                         >
                         {value3
                             ? region.find((region) => region.value === value3)?.label
-                            : "서울/경기도/광주"}
+                            : "아파트"}
                         <ChevronsUpDown className="opacity-50" />
                         </Button>
                     </PopoverTrigger>
@@ -277,8 +226,8 @@ export default function Data_1() {
                     </PopoverContent>
                     </Popover>
 
-                    <div className="w-full h-[15rem] pt-36">
-                        <Link href="/data_in_2" className="w-32 h-12">
+                    <div className="w-full h-[15rem] pt-32">
+                        <Link href="/chu_list" className="w-32 h-12">
                             <Button variant="outline" className="border-[#C299AB] w-full h-12 border-2 rounded-3xl text-[#FF70BA] font-extrabold">
                                 다음으로 넘어가기
                             </Button>
