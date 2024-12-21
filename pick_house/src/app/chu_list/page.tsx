@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 
 
-export default function Sign_Up_Good() {
+export default function Chu_List() {
     let name  = ['앱잼 아파트 1단지', '앱잼 아파트 2단지', '앱잼 아파트 3단지', '앱잼 아파트 4단지', '앱잼 아파트 5단지', '앱잼 아파트 6단지', '앱잼 아파트 7단지',]
     let coment = [
         '아파트, 원룸, 다세대, 신축(2018~)',
