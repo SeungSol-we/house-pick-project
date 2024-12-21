@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>조건 선택</title>
+</head>
+<body>
+    <h1>조건을 선택하세요</h1>
+    <form method="POST" action="{% url 'filter_apartments' %}">
+        {% csrf_token %}
+
+        <!-- 월/전세 선택 -->
+        <label for="property_type">월세/전세 선택:</label>
+        <select id="property_type" name="property_type">
+            <option value="monthly">월세</option>
+            <option value="jeonse">전세</option>
+            <option value="sale">매매</option>
+        </select>
+        <br><br>
+
+        <!-- 가구 선택 -->
+        <label for="household_type">가구 선택:</label>
+        <select id="household_type" name="household_type">
+            <option value="one">1인 가구</option>
+            <option value="two">2인 가구</option>
+            <option value="three">3인 가구</option>
+            <option value="four">4인 가구</option>
+        </select>
+        <br><br>
+
+        <!-- 선호 지역 -->
+        <label for="region_type">선호 지역:</label>
+        <select id="region_type" name="region_type">
+            <option value="Seoul">서울특별시</option>
+            <option value="busan">부산광역시</option>
+            <option value="daejeon">대전광역시</option>
+            <option value="Sejong">세종특별자치시</option>
+            <option value="daegu">대구광역시</option>
+            <option value="Ulsan">울산광역시</option>
+            <option value="gwangju">광주광역시</option>
+            <option value="gyeonggi">경기도</option>
+            <option value="Gangwon">강원도</option>
+            <option value="Gyeongsangbuk">경상북도</option>
+            <option value="Gyeongsangnam">경상남도</option>
+            <option value="Chungcheongnam">충청남도</option>
+            <option value="Chungcheongbuk">충청북도</option>
+            <option value="Jeollabuk-do">전라북도</option>
+            <option value="Jeollanam-do">전라남도</option>
+        </select>
+        <br><br>
+
+        <!-- 방향 선택 -->
+        <label for="direction_type">방향 선택:</label>
+        <select id="direction_type" name="direction_type">
+            <option value="south">남향</option>
+            <option value="north">북향</option>
+        </select>
+        <br><br>
+
+        <!-- 건물 유형 -->
+        <label for="category_type">건물 유형:</label>
+        <select id="category_type" name="category_type">
+            <option value="art">아파트</option>
+            <option value="house">주택</option>
+        </select>
+        <br><br>
+
+        <button type="submit">검색</button>
+    </form>
+</body>
+</html>

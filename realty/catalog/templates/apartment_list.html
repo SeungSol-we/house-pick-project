@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apartment List</title>
+</head>
+<body>
+    <h1>Apartment List</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>시군구</th>
+                <th>단지명</th>
+                <th>전월세구분</th>
+                <th>적용면적(㎡)</th>
+                <th>계약년월</th>
+                <th>보증금(만원)</th>
+                <th>월세금(만원)</th>
+                <th>주택유형</th>
+                <th>방향</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for apartment in apartments %}
+                <tr>
+                    <td>{{ apartment.city_district }}</td>
+                    <td>{{ apartment.complex_name }}</td>
+                    <td>{{ apartment.rent_type }}</td>
+                    <td>{{ apartment.area }}</td>
+                    <td>{{ apartment.contract_year_month }}</td>
+                    <td>{{ apartment.deposit }}</td>
+                    <td>{{ apartment.monthly_rent }}</td>
+                    <td>{{ apartment.housing_type }}</td>
+                    <td>{{ apartment.direction }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -23,4 +23,6 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
+    path('select-conditions/', views.select_conditions, name='select_conditions'),
+    path('filter-apartments/', views.filter_apartments, name='filter_apartments'),
 ]

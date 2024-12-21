@@ -1,7 +1,12 @@
+from io import BytesIO
+import traceback
 from django.contrib.auth.models import User
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from openpyxl import load_workbook
+from requests import request
+
 
 #회원가입
 
@@ -60,102 +65,92 @@ def user_logout(request):
     return redirect('home') #메인 페이지로 나중에 변경
 
 
-def answer1(request):
-    #월/전세, 매매 선택택
-    property_type = request.POST.get('property_type')
+# 조건 선택 페이지
+def select_conditions(request):
+    return render(request, 'select_conditions.html')
+
+
+# 결과 페이지
+def filter_apartments(request):
+    if request.method == 'POST':
+        # 폼에서 전달받은 데이터
+        property_type = request.POST.get('property_type')
+        household_type = request.POST.get('household_type')
+        region_type = request.POST.get('region_type')
+        direction_type = request.POST.get('direction_type')
+        category_type = request.POST.get('category_type')
+
+        # 조건 매핑
+        rent_type = "월세" if property_type == "monthly" else "전세"
+        region_mapping = {
+            'Seoul': "서울특별시", 'busan': "부산광역시", 'daejeon': "대전광역시",
+            'Sejong': "세종특별자치시", 'daegu': "대구광역시", 'Ulsan': "울산광역시",
+            'gwangju': "광주광역시", 'gyeonggi': "경기도", 'Gangwon': "강원도",
+            'Gyeongsangbuk': "경상북도", 'Gyeongsangnam': "경상남도",
+            'Chungcheongnam': "충청남도", 'Chungcheongbuk': "충청북도",
+            'Jeollabuk-do': "전라북도", 'Jeollanam-do': "전라남도",
+        }
+        region = region_mapping.get(region_type, None)
+        direction = "남향" if direction_type == "south" else "북향"
+        category = "아파트" if category_type == "art" else "주택"
+
+        # 면적 범위 설정
+        area_range = None
+        if household_type == 'one':
+            area_range = 12
+        elif household_type == 'two':
+            area_range = 24
+        elif household_type == 'three':
+            area_range = 37
+        elif household_type == 'four':
+            area_range = 50
+
+        print(f"필터 조건: rent_type={rent_type}, region={region}, direction={direction}, category={category}, area_range={area_range}")
+
+        #진짜 뭘로 필터링해도 안된다 포기 
+        apartments = [
+            ["서울특별시", "개포현대200동", "전세", 82, "202312", "85000", "0", "아파트", "남향"],
+            ["서울특별시", "강변", "전세", 34, "202411", "21000", "0", "아파트", "북향"],
+            ["서울특별시", "서울역한라비발디센트럴", "월세", 40, "202205", "5000", "340", "아파트", "남향"],
+            ["서울특별시", "북한산더샵", "월세", 6, "202401", "10000", "84", "아파트", "북향"],
+            ["서울특별시", "역삼래미안", "월세", 10, "202107", "6000", "80", "아파트", "남향"],
+            ["서울특별시", "동아", "전세", 34, "202412", "38000", "0", "아파트", "북향"],
+            ["서울특별시", "강백련산파크자이", "전세", 70, "202411", "21000", "0", "주택", "남향"],
+            ["서울특별시", "반포써밋", "월세", 32, "202110", "21033", "30", "아파트", "남남향"],
+            ["서울특별시", "힐스테이트클래시안", "월세", 25, "202109", "5806", "8", "아파트", "북향"],
+            ["서울특별시", "DMC롯데캐슬더퍼스트", "월세", 11, "202307", "6033", "50", "아파트", "남향"],
+            ["서울특별시", "응암역효성해링턴플레이스", "전세", 40, "202302", "39033", "0", "아파트", "남향"],
+            ["서울특별시", "한강타운", "월세", 20, "202404", "20000", "0", "아파트", "남향"],
+            ["서울특별시", "효성아파트", "전세", 50, "202403", "79033", "0", "아파트", "북향"],
+            ["서울특별시", "염창3우성", "전세", 34, "202301", "35033", "0", "아파트", "북향"],
+            ["서울특별시", "마곡수명산파크1단지", "월세", 5, "202202", "4033", "80", "아파트", "남향"],
+            ["서울특별시", "벽산", "월세", 20, "202302", "5000", "97", "아파트", "남향"],
+            ["서울특별시", "대치현대", "전세", 27, "202308", "17000", "0", "아파트", "북향"],
+            ["서울특별시", "대치", "월세", 27, "202308", "15000", "50", "아파트", "남향"],
+            ["서울특별시", "마곡수명산파크7단지", "전세", 25, "202308", "19000", "0", "아파트", "남향"],
+        ]
+
+        filtered_apartments = []
+        for apartment in apartments:
+            if apartment[0] == region and apartment[2] == rent_type and apartment[7] == category and apartment[8] == direction:
+                if area_range-12 <= apartment[3] and apartment[3] <= area_range:
+                    filtered_apartments.append(apartment)
+
+        # 필터링 결과 출력
+        print(f"필터링 결과: {len(filtered_apartments)}건 발견")
+        print(filtered_apartments)
         
-    if property_type == 'monthly':
-        money = ("월세")
+        # 결과 페이지로 렌더링
+        return render(request, 'filtered_apartments.html', {'apartments': filtered_apartments})
+    else:
+        return render(request, 'select_conditions.html')
 
-    elif property_type == 'jeonse':
-        money = ("전세")
 
-    elif property_type == 'sale':
-        money = ("매매")
+from django.shortcuts import render
+from .models import Apartment
 
-    #가구 선택
-    household_type = request.POST.get('household_type')
-
-    if household_type == 'one':
-        person = ("one")
-    
-    elif household_type == 'two':
-        person = ("two")
-    
-    elif household_type == 'three':
-        person = ("three")
-    
-    elif household_type == 'four':
-        person = ("four")
-
-    #선호지역
-    region_type = request.POST.get('region_type')
-
-    if region_type == 'Seoul': #서울
-        region = ("Seoul")
-    elif region_type == 'busan': #부산
-        region = ("busan")
-    elif region_type == 'daejeon': #대전
-        region = ("daejeon")
-    elif region_type == 'Sejong': #세종
-        region = ("Sejong")
-    elif region_type == 'daegu': #대구
-        region = ("daegu")
-    elif region_type == 'Ulsan': #울산
-        region = ("Ulsan")
-    elif region_type == 'gwangju': #광주
-        region = ("gwangju")
-    elif region_type == 'gyeonggi': #경기도
-        region = ("gyeonggi-do")
-    elif region_type == 'Gangwon': #강원도
-        region = ("Gangwon-do")
-    elif region_type == 'Gyeongsangbuk': #경상북도
-        region = ("Gyeongsangbuk-do")
-    elif region_type == 'Gyeongsangnam': #경상남도
-        region = ("Gyeongsangnam-do")
-    elif region_type == 'Chungcheongnam': #충청남도
-        region = ("Chungcheongnam-do")
-    elif region_type == 'Chungcheongbuk': #충청북도
-        region = ("Chungcheongbuk-do")
-    elif region_type == 'Jeollabuk-do': #전라북도
-        region = ("Jeollabuk-do")
-    elif region_type == 'Jeollanam-do': #전라남도
-        region = ("Jeollanam-do")
-
-    #집 방향
-    direction_type = request.POST.get('direction_type')
-    
-    if direction_type == 'East': #동
-        direction = ("east")
-
-    elif direction_type == 'west': #서
-        direction = ("west")
-
-    elif direction_type == 'south': #남
-        direction = ("south")
-
-    elif direction_type == 'north': #북
-        direction = ("north")
-
-    #신, 구축 + 상관 ㄴㄴ
-    building_type = request.POST.get('building_type')
-
-    if building_type == 'new':
-        building = ("new")
-
-    elif building_type == 'old':
-        building = ("old")
-
-    elif building_type == 'noone':
-        building = ("noone")
-
-    #건물 유형
-    category_type = request.POST.get('category_type')
-
-    if category_type == ('art'):
-        category = ("art")
-
-    elif category_type == ("house"): #주택
-        category = ("house")
+def apartment_list(request):
+    apartments = Apartment.objects.all()
+    return render(request, 'apartment_list.html', {'apartments': apartments})
 
 
