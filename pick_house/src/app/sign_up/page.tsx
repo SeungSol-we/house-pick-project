@@ -17,7 +17,7 @@ export default function Sign_Up() {
         <p className="w-full h-auto mt-5 text-base">사용될 이메일을 입력해 주세요</p>   
         <input className="w-full h-12 mt-2 px-4 text-xs text-red-300 bg-white rounded-full focus:outline-none " type="email" name="email" placeholder="여기에 이메일을 입력해 주세요" />
 
-         <p className="w-full h-auto mt-5 text-base">비밀번호를 입력해 주세요</p>
+        <p className="w-full h-auto mt-5 text-base">비밀번호를 입력해 주세요</p>
         <input className="w-full h-12 mt-2 px-4 text-xs text-red-300 bg-white rounded-full focus:outline-none " type="email" name="password1" placeholder="여기에 비밀번호를 입력해 주세요" />
         <input className="w-full h-12 mt-2 px-4 text-xs text-red-300 bg-white rounded-full focus:outline-none " type="email" name="password2" placeholder="여기에 비밀번호를 확인시켜 주세요" />
 
