@@ -1,17 +1,15 @@
-import Image from "next/image";
-
-import { MoveDown } from 'lucide-react';
 import { CircleCheck } from 'lucide-react';
-
-import { Button } from "@/components/ui/button"
 
 import Link from 'next/link';
 
-export default function Home() {
+import { Button } from "@/components/ui/button"
+
+
+export default function Sign_Up_Good() {
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">
       <div className="px-5 pt-8 w-{100vw} h-{100vh}">
-        <p className="w-auto h-auto text-3xl font-bold">로그인이 완료됐어요!</p>
+        <p className="w-auto h-auto text-3xl font-bold">회원가입이 완료됐어요!</p>
         <p className="w-full h-auto mt-2 text-xs">이제 회원님의 선호 정보를 바탕으로 분석할게요</p>
       </div>
       
