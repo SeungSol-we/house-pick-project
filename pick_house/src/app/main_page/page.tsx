@@ -12,11 +12,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 export default function Main_page() {
-    let name  = ['앱잼 아파트 1단지', '앱잼 아파트 2단지', '앱잼 아파트 3단지', ]
+    let name  = ['역삼래미안', '한강타운', 'DMC롯데캐슬퍼스',]
     let coment = [
-        '아파트, 원룸, 다세대, 신축(2018~)',
-        '아파트, 원룸, 다세대, 신축(2022~)',
-        '아파트, 원룸, 다세대, 신축(2021~)',
+        '아파트, 10평, 다세대, 신축(2018~)',
+        '아파트, 11평, 다세대, 신축(2022~)',
+        '아파트, 8평, 다세대, 신축(2021~)',
     ]
     let date = [
         '2018년 7월',
@@ -24,9 +24,9 @@ export default function Main_page() {
         '2021년 6월',
     ]
     let price = [
-        '525/40',
-        '492/30',
-        '498/42',
+        '6000/80',
+        '6033/50',
+        '5033/50',
     ]
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">
@@ -62,7 +62,7 @@ export default function Main_page() {
                     </div>
                 </div>
             </Link>
-            <Link href="/woard">
+            <Link href="/main_page/woard">
                 <div className="w-full h-[5rem] bg-white flex mt-2 rounded-2xl">
                     <div className="m-4 mt-6">
                         <Building2 size={30} color="#C299AB"/>
