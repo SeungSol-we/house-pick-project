@@ -12,7 +12,7 @@ export default function ExamplePage() {
     try {
       const csrftoken = await getCSRFToken(); // 아래에 getCSRFToken 함수 구현 예시 참조
 
-      const response = await fetch('http://localhost:8000/api/user', {
+      const response = await fetch('http://localhost:8000/api/user/', {
         method: 'POST', // POST 요청으로 변경 (CSRF 토큰은 POST 요청에 필요)
         headers: {
           'Content-Type': 'application/json',
