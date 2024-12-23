@@ -1,55 +1,45 @@
+from django.http import JsonResponse
 from django.contrib.auth.models import User
-from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+import json
 
-#회원가입입
-def register(request):
+# 데이터 검증 및 처리 API
+def validate_and_process_user(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-        email = request.POST['email']
+        try:
+            # JSON 데이터 파싱
+            data = json.loads(request.body)
+            action = data.get('action')  # 클라이언트가 요청한 작업 (예: 'register', 'login')
+            username = data.get('username')
+            password = data.get('password')
+            email = data.get('email', '')
 
-        if password1 != password2:
-            messages.error(request, "입력한 비밀번호와 다릅니다.")
-            return redirect('register')
+            if action == 'register':
+                # 회원가입 처리
+                if User.objects.filter(email=email).exists():
+                    return JsonResponse({'success': False, 'message': "이미 존재하는 사용자입니다."}, status=400)
+                user = User.objects.create_user(username=username, password=password, email=email)
+                user.save()
+                return JsonResponse({'success': True, 'message': "회원가입 성공!"}, status=201)
 
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "비밀번호가 맞습니다.")
-            return redirect('register')
+            elif action == 'login':
+                # 로그인 처리
+                user = authenticate(request, email=email, password=password)
+                if user is not None:
+                    login(request, user)
+                    return JsonResponse({'success': True, 'message': "로그인 성공!"}, status=200)
+                else:
+                    return JsonResponse({'success': False, 'message': "잘못된 사용자명 또는 비밀번호."}, status=401)
 
-        user = User.objects.create_user(username=username, password=password1, email=email)
-        user.save()
-        messages.success(request, "회원가입이 완료되었습니다.")
-        return redirect('login')
+            elif action == 'logout':
+                # 로그아웃 처리
+                logout(request)
+                return JsonResponse({'success': True, 'message': "로그아웃 성공!"}, status=200)
 
-    return render(request, 'register.html')
+            else:
+                return JsonResponse({'success': False, 'message': "알 수 없는 요청 작업."}, status=400)
 
-#로그인
-from django.contrib.auth import authenticate, login
-from django.contrib import messages
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': "잘못된 요청 데이터 형식입니다."}, status=400)
 
-def user_login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            messages.success(request, "로그인에 성공했습니다.")
-            return redirect('home')  # 홈 페이지로 리다이렉트
-        else:
-            messages.error(request, "이름이나 패스워드를 확인해주세요.")
-            return redirect('login')
-
-    return render(request, 'login.html')
-
-#로그아웃
-from django.contrib.auth import logout
-
-def user_logout(request):
-    logout(request)
-    messages.success(request, "Logged out successfully!")
-    return redirect('login')
-
+    return JsonResponse({'success': False, 'message': "잘못된 요청 방식입니다."}, status=405)
