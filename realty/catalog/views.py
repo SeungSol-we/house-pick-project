@@ -52,72 +52,79 @@ def validate_and_process_user(request):
 import pandas as pd
 from django.shortcuts import redirect, render
 
+import pandas as pd
+import json
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt  # CSRF 보호 비활성화 (API 요청에 필요한 경우)
 def filter_apartments(request):
     if request.method == 'POST':
-        # 폼에서 전달받은 데이터
-        property_type = request.POST.get('property_type')
-        household_type = request.POST.get('household_type')
-        region_type = request.POST.get('region_type')
-        direction_type = request.POST.get('direction_type')
-        category_type = request.POST.get('category_type')
+        try:
+            # JSON 데이터를 받음
+            data = json.loads(request.body)
 
-        # 조건 매핑
-        rent_type = "월세" if property_type == "monthly" else "전세"
-        region_mapping = {
-            'Seoul': "서울특별시", 'busan': "부산광역시", 'daejeon': "대전광역시",
-            'Sejong': "세종특별자치시", 'daegu': "대구광역시", 'Ulsan': "울산광역시",
-            'gwangju': "광주광역시", 'gyeonggi': "경기도", 'Gangwon': "강원도",
-            'Gyeongsangbuk': "경상북도", 'Gyeongsangnam': "경상남도",
-            'Chungcheongnam': "충청남도", 'Chungcheongbuk': "충청북도",
-            'Jeollabuk-do': "전라북도", 'Jeollanam-do': "전라남도",
-        }
-        region = region_mapping.get(region_type, None)
-        direction = "남향" if direction_type == "south" else "북향"
-        category = "아파트" if category_type == "art" else "주택"
+            # 폼에서 전달받은 데이터
+            property_type = data.get('property_type')
+            household_type = data.get('household_type')
+            region_type = data.get('region_type')
+            direction_type = data.get('direction_type')
+            category_type = data.get('category_type')
 
-        # 면적 범위 설정
-        area_range = None
-        if household_type == 'one':
-            area_range = 0
-        elif household_type == 'two':
-            area_range = 13
-        elif household_type == 'three':
-            area_range = 25
-        elif household_type == 'four':
-            area_range = 38
+            # 조건 매핑
+            rent_type = "월세" if property_type == "monthly" else "전세"
+            region_mapping = {
+                'Seoul': "서울특별시", 'busan': "부산광역시", 'daejeon': "대전광역시",
+                'Sejong': "세종특별자치시", 'daegu': "대구광역시", 'Ulsan': "울산광역시",
+                'gwangju': "광주광역시", 'gyeonggi': "경기도", 'Gangwon': "강원도",
+                'Gyeongsangbuk': "경상북도", 'Gyeongsangnam': "경상남도",
+                'Chungcheongnam': "충청남도", 'Chungcheongbuk': "충청북도",
+                'Jeollabuk-do': "전라북도", 'Jeollanam-do': "전라남도",
+            }
+            region = region_mapping.get(region_type, None)
+            direction = "남향" if direction_type == "south" else "북향"
+            category = "아파트" if category_type == "art" else "주택"
 
-        # 엑셀 파일 읽기 (엑셀 경로와 파일명을 수정해야 함)
-        df = pd.read_excel('path_to_apartment_data.xlsx')
+            # 면적 범위 설정
+            area_range = None
+            if household_type == 'one':
+                area_range = 0
+            elif household_type == 'two':
+                area_range = 13
+            elif household_type == 'three':
+                area_range = 25
+            elif household_type == 'four':
+                area_range = 38
 
-        # 필터링 조건 적용
-        if rent_type:
-            df = df[df['rent_type'] == rent_type]
+            # 엑셀 파일 읽기 (엑셀 경로와 파일명을 수정해야 함)
+            df = pd.read_excel('path_to_apartment_data.xlsx')
+
+            # 필터링 조건 적용
+            if rent_type:
+                df = df[df['rent_type'] == rent_type]
             
-        if region:
-            df = df[df['region'] == region]
+            if region:
+                df = df[df['region'] == region]
 
-        if direction:
-            df = df[df['direction'] == direction]
+            if direction:
+                df = df[df['direction'] == direction]
 
-        if category:
-            df = df[df['category'] == category]
+            if category:
+                df = df[df['category'] == category]
 
-        if area_range is not None:
-            df = df[df['area'] >= area_range]
+            if area_range is not None:
+                df = df[df['area'] >= area_range]
 
-        print(f"필터링 결과: {len(df)}건 발견")
+            print(f"필터링 결과: {len(df)}건 발견")
 
-        # 결과 페이지로 렌더링
-        return render(request, 'filtered_apartments.html', {'apartments': df.to_dict(orient='records')})
+            # 필터링된 결과를 JSON 형식으로 반환
+            apartments = df.to_dict(orient='records')
+
+            return JsonResponse({'apartments': apartments}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
 
     else:
-        return redirect('select_conditions')
+        return JsonResponse({'error': 'Only POST method is allowed'}, status=405)
 
-
-def apartment_list(request):
-    # 엑셀 파일 읽기
-    df = pd.read_excel('path_to_apartment_data.xlsx')
-
-    # 데이터프레임을 리스트 형식으로 변환하여 템플릿에 전달
-    apartments = df.to_dict(orient='records')
-    return render(request, 'apartment_list.html', {'apartments': apartments})
