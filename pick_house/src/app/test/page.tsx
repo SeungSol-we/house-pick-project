@@ -10,7 +10,7 @@ export default function ExamplePage() {
 
   const handleRequest = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/example/');
+      const response = await fetch('http://localhost:8000/api/user');
       const result = await response.json();
 
       if (!result.success) {
