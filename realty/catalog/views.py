@@ -17,6 +17,9 @@ class EmailBackend(BaseBackend):
 
 
 # 데이터 검증 및 처리 API
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 def validate_and_process_user(request):
     if request.method == 'POST':
         try:
