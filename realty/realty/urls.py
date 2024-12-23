@@ -14,14 +14,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from atexit import register
+from turtle import home
 from django.contrib import admin
 from django.urls import path
+from platformdirs import user_log_dir
 
-from realty.realty.catalog import views
+from catalog import views
 
 urlpatterns = [
-    path('register/', views.register, name='register'),
-    path('login/', views.user_login, name='login'),
-    path('', views.home, name='home'),  # 홈 페이지
-    path('logout/', views.user_logout, name='logout'),
+    path('api/user/', views.validate_and_process_user, name='validate_and_process_user'),
 ]
