@@ -1,13 +1,16 @@
-import Image from "next/image";
+"use client"
 
-import { MoveDown } from 'lucide-react';
-import { House } from 'lucide-react';
+import Image from "next/image";
+import Link from 'next/link';
+
+import { useState } from 'react';
 
 import { Button } from "@/components/ui/button"
 
-import Link from 'next/link';
 
 export default function Sign_Up() {
+
+
   return (
     <div className="px-5 w-{100vw} h-{100vh} bg-[#FFF6FE]">
         <p className="w-full h-auto pt-10 text-3xl font-medium">하우스픽을 처음</p>
