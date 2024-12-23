@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 import json
+from django.urls import path
 
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import User

@@ -9,10 +9,10 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
-
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -128,10 +128,6 @@ INSTALLED_APPS += ['corsheaders']
 MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE
 CORS_ORIGIN_ALLOW_ALL = True  # 모든 도메인 허용 (개발 환경)
 
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',  # 기본 백엔드
-    'path.to.EmailBackend',  # 커스텀 백엔드 추가
-]
 
 
 CORS_ALLOWED_ORIGINS = [
