@@ -34,19 +34,19 @@ def validate_and_process_user(request):
             if action == 'register':
                 # 회원가입 처리
                 if User.objects.filter(email=email).exists():
-                    return JsonResponse({'success': False, 'message': "this user is no"}, status=400)
+                    return JsonResponse({'success': False, 'message': "이미 있는 이메일입니다."}, status=400)
                 user = User.objects.create_user(username=username, password=password, email=email)
                 user.save()
-                return JsonResponse({'success': True, 'message': "success sign_up"}, status=201)
+                return JsonResponse({'success': True, 'message': "회원가입에 성공했습니다."}, status=201)
 
             elif action == 'login':
                 # 로그인 처리
                 user = authenticate(request, email=email, password=password)
                 if user is not None:
                     login(request, user)
-                    return JsonResponse({'success': True, 'message': "success login"}, status=200)
+                    return JsonResponse({'success': True, 'message': "로그인에 성공했습니다."}, status=200)
                 else:
-                    return JsonResponse({'success': False, 'message': "no user or password"}, status=401)
+                    return JsonResponse({'success': False, 'message': "이메일이나 비밀번호가 맞지 않습니다."}, status=401)
 
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'message': "no function"}, status=400)
