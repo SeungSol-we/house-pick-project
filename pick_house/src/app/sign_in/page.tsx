@@ -1,6 +1,3 @@
-import { MoveDown } from 'lucide-react';
-import { House } from 'lucide-react';
-
 import { Button } from "@/components/ui/button"
 
 import Link from 'next/link';
@@ -21,7 +18,7 @@ export default function Sign_In() {
         <input className="w-full h-12 mt-2 px-4 text-xs text-red-300 bg-white rounded-full focus:outline-none " type="email" placeholder="여기에 이메일을 입력해 주세요" />
 
          <p className="w-full h-auto mt-5 text-base">비밀번호를 입력해 주세요</p>
-        <input className="w-full h-12 mt-2 px-4 text-xs text-red-300 bg-white rounded-full focus:outline-none " type="email" placeholder="여기에 비밀번호를 입력해 주세요" />
+        <input className="w-full h-12 mt-2 px-4 text-xs text-red-300 bg-white rounded-full focus:outline-none " type="password" placeholder="여기에 비밀번호를 입력해 주세요" />
 
         <div className="flex justify-center w-full pt-5 h-8">
             <Link href="/sign_in/sign_idk" className="text-pink-500 w-auto text-xs font-bold">비밀번호/이메일이 기억나지 않나요?</Link>
