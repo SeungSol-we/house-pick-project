@@ -135,5 +135,7 @@ AUTHENTICATION_BACKENDS = [
 
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # Next.js 프론트엔드 URL
+    'http://localhost:3000',  # Next.js 프론트엔드 URL
 ]
+
+CORS_ALLOW_CREDENTIALS = True

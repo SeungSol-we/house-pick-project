@@ -59,6 +59,8 @@ import pandas as pd
 import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+'''
+
 
 @csrf_exempt  # CSRF 보호 비활성화 (API 요청에 필요한 경우)
 def filter_apartments(request):
@@ -131,3 +133,4 @@ def filter_apartments(request):
     else:
         return JsonResponse({'error': 'Only POST method is allowed'}, status=405)
 
+'''
