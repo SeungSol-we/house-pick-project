@@ -10,18 +10,31 @@ export default function ExamplePage() {
 
   const handleRequest = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/user');
-      const result = await response.json();
+      const csrftoken = await getCSRFToken(); // 아래에 getCSRFToken 함수 구현 예시 참조
 
-      if (!result.success) {
-        throw new Error(result.message);
-      }
-
-      setMessage(result.message); // 성공 메시지 설정
-      router.push('/success-page'); // 성공 시 다음 페이지로 이동
+      const response = await fetch('http://localhost:8000/api/user', {
+        method: 'POST', // POST 요청으로 변경 (CSRF 토큰은 POST 요청에 필요)
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken, // CSRF 토큰 헤더 추가
+        },
+        // body: JSON.stringify({ ... 필요한 데이터 }), // 필요한 경우 데이터 추가
+      });
     } catch (err:any) {
       setError(err.message); // 에러 메시지 설정
     }
+  };
+
+
+  const getCSRFToken = async () => {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.startsWith('csrftoken=')) {
+        return cookie.substring('csrftoken='.length, cookie.length);
+      }
+    }
+    return "";
   };
 
   return (
