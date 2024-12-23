@@ -46,6 +46,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -130,4 +131,9 @@ CORS_ORIGIN_ALLOW_ALL = True  # 모든 도메인 허용 (개발 환경)
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # 기본 백엔드
     'path.to.EmailBackend',  # 커스텀 백엔드 추가
+]
+
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Next.js 프론트엔드 URL
 ]
