@@ -48,14 +48,13 @@ export default function Data_2() {
             });
 
             if (response.ok) {
-                const data = await response.json();
-                setApartments(data.apartments);
-                setError(null);
+            const data = await response.json();
+            setApartments(data.apartments);
+            setError(null);
 
-                // 쿼리 파라미터로 데이터 전달
-                const queryParams = new URLSearchParams();
-                sessionStorage.setItem('apartments', JSON.stringify(data.apartments));
-                router.push('/chu_list');
+            const apartmentsString = JSON.stringify(data.apartments);
+            const encodedApartmentsString = encodeURIComponent(apartmentsString);
+            router.push(`/chu_list?apartments=${encodedApartmentsString}`);
 
             } else if (response.status === 404) {
                 setError("조건에 맞는 아파트가 없습니다.");
