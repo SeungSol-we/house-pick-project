@@ -60,7 +60,7 @@ export default function Data_1() {
                 const data = await response.json();
                 setApartments(data.apartments); // 필터링된 아파트 데이터 설정
                 setError(null); // 에러 초기화
-                router.push('/data_in_2');
+                router.push('/test2'); //페이지 이동 경로로
 
             } else {
                 const errorData = await response.json();

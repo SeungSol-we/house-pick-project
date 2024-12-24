@@ -1,107 +1,116 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-
-export default function Sign_In() {
-    const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
-    const [message, setMessage] = useState('');
+export default function Data_1() {
+    const [propertyType, setPropertyType] = useState('');
+    const [householdType, setHouseholdType] = useState('');
+    const [regionType, setRegionType] = useState('');
+    const [directionType, setDirectionType] = useState('');
+    const [categoryType, setCategoryType] = useState('');
+    const [apartments, setApartments] = useState([]);
+    const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
 
-    const getCSRFToken = () => {
+    const getCSRFToken = (): string | null => {
         const cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.startsWith('csrftoken=')) {
-            return cookie.substring('csrftoken='.length, cookie.length);
-          }
+            const cookie = cookies[i].trim();
+            if (cookie.startsWith('csrftoken=')) {
+                return cookie.substring('csrftoken='.length, cookie.length);
+            }
         }
-        return ""; // 토큰이 없으면 빈 문자열 반환
+        return null;
     };
 
-    const handleSubmit = async (action : string) => {
+
+    const handleSubmit = async () => {
         const requestData = {
-        action,
-        password,
-        email,
+            property_type: propertyType,
+            household_type: householdType,
+            region_type: regionType,
+            direction_type: directionType,
+            category_type: categoryType,
         };
 
         try {
             const csrftoken = getCSRFToken();
-            const response = await fetch('http://localhost:8000/api/user/', {
+
+            if (!csrftoken) {
+                setError('CSRF 토큰을 찾을 수 없습니다.');
+                return;
+            }
+
+            const response = await fetch('http://localhost:8000/api/filter/', {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken, // CSRF 토큰 추가
+                    'X-CSRFToken': csrftoken,
                 },
                 body: JSON.stringify(requestData),
-                credentials: 'include', 
             });
 
-            const result = await response.json();
+            if (response.ok) {
+                const data = await response.json();
+                setApartments(data.apartments);
+                setError(null);
 
-            if (response.ok && result.success) { // 성공 여부 확인
-                setMessage(result.message); // 성공 메시지
-                router.push('/sign_in/sign_in_good'); // 성공 시 이동할 페이지
+                // 쿼리 파라미터로 데이터 전달
+                const queryParams = new URLSearchParams();
+                queryParams.set('apartments', JSON.stringify(data.apartments)); // apartments를 문자열로 변환하여 쿼리 파라미터에 추가
+                router.push(`/chu_list?${queryParams.toString()}`);
             } else {
-                setMessage(`Error: ${result.message}`); // 실패 메시지 (result.message가 없을 경우 대비)
+                const errorData = await response.json();
+                setError(errorData.error || '필터링 요청 실패');
             }
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error:', error);
-            setMessage('서버와의 통신 중 오류가 발생했습니다.');
+            setError(error.message || '서버와의 통신 중 오류가 발생했습니다.');
         }
     };
 
+    return (
+         <div className="flex justify-center">
+        <div className="w-full h-{100vh} bg-[#FFF6FE]">
+          <div className="px-5 pt-8 w-{100vw} h-{100vh}">
+              <p className="w-auto h-auto text-3xl ">선호하시는 집</p>
+              <p className="w-auto h-auto text-3xl font-bold">정보를 입력해주세요</p>
+              <p className="w-full h-auto mt-2 text-xs">해당 정보를 바탕으로 회원님께 딱 맞는 집을 분석해요</p>
+          
+              <p className="w-full h-auto mt-20 text-base font-semibold ">향 방향은 어떤 것을 선호하시나요?</p>
+              <div className="w-full h-12 justify-between mt-2 border-0 rounded-3xl bg-white flex align-middle p-4">
+                <select value={directionType} onChange={(e) => setDirectionType(e.target.value)} className="w-full">
+                  <option value="">향 방향 선택</option>
+                  <option value="monthly">남향</option>
+                  <option value="deposit">북향</option>
+                </select>
+              </div>
+                
+              <p className="w-[310px] h-auto mt-2 text-[11px] text-[#C299AB]">남향은 일조량이 많고 따뜻하며, 북향은 햇빛이 적고 시원함을 즐길 수 있어요. 대부분 "남향"을 선호해요.</p>
 
 
+              <p className="w-full h-auto mt-6 text-base font-semibold ">건물 유형 여부는?</p>
+              <div className="w-full h-12 justify-between mt-2 border-0 rounded-3xl bg-white flex align-middle p-4">
+                <select value={categoryType} onChange={(e) => setCategoryType(e.target.value)} className="w-full">
+                  <option value="">선호 지역 선택</option>
+                  <option value="Seoul">아파트</option>
+                  <option value="daejeon">주택</option>
+                </select>
+              </div>
 
-  return (
-    <div className="px-5 w-{100vw} h-{100vh} bg-[#FFF6FE]">
-        <p className="w-full h-auto pt-10 text-3xl font-medium">하우스픽에 다시</p>
-        <div className="flex h-8">
-            <p className="w-24 h-auto text-3xl font-medium">오신걸ㅤ</p>
-            <p className="w-auto h-auto text-3xl font-bold">환영합니다!</p>
-        </div>
-        
-        <p className="w-full h-auto mt-2 text-xs">하우스픽에 오신걸 환영해요! 몇가지 정보를 적어주세요</p>
+              {error && <p style={{ color: 'red' }}>{error}</p>} {/* 에러 메시지 표시 */}
 
-        <p className="w-full h-auto mt-24 text-base">이메일을 입력해 주세요</p>
-        <input className="w-full h-12 mt-2 px-4 text-xs text-red-300 bg-white rounded-full focus:outline-none " 
-        type="email" 
-        placeholder="여기에 이메일을 입력해 주세요" 
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        />
-
-         <p className="w-full h-auto mt-5 text-base">비밀번호를 입력해 주세요</p>
-        <input className="w-full h-12 mt-2 px-4 text-xs text-red-300 bg-white rounded-full focus:outline-none " 
-        type="password" 
-        placeholder="여기에 비밀번호를 입력해 주세요" 
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <p>{message}</p>
-
-        <div className="flex justify-center w-full pt-5 h-8">
-            <Link href="/sign_in/sign_idk" className="text-pink-500 w-auto text-xs font-bold">비밀번호/이메일이 기억나지 않나요?</Link>
-        </div>
-        
-        <div className="w-full h-[15rem] pt-40">
-             {/* Link 제거, onClick 핸들러 추가 */}
-                <Button variant="outline" 
-                        className="border-[#C299AB] w-full h-12 border-2 rounded-3xl text-[#FF70BA] font-extrabold"
-                        onClick={() => handleSubmit('login')}> {/* action 값 전달 */}
-                    로그인하기
+              <div className=" w-full h-[4.5rem] mt-40">
+                <Button variant="outline" className="border-[#C299AB] w-full h-12 border-2 rounded-3xl text-[#FF70BA] font-extrabold" onClick={handleSubmit}>
+                    다음으로 넘어가기
                 </Button>
-        </div>
+              </div>
 
+          </div> 
+        </div>
     </div>
-        
-  );
+    );
 }
