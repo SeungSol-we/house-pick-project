@@ -62,6 +62,15 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+import random
+
+import random
+import pandas as pd
+import json
+import os
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
 @csrf_exempt  # CSRF 보호 비활성화
 def filter_apartments(request):
     if request.method == 'POST':
@@ -104,16 +113,15 @@ def filter_apartments(request):
             # 엑셀 파일 읽기
             try:
                 file_path = os.path.join(os.path.dirname(__file__), 'apt.xlsx')
-                df = pd.read_excel(file_path)
+                df = pd.read_excel(file_path, header=0)
             except FileNotFoundError:
                 return JsonResponse({'success': False, 'message': "아파트 데이터 파일이 없습니다."}, status=500)
 
             # Clean column names (strip whitespace) and ensure correct types
             df.columns = df.columns.str.strip()  # Remove any leading/trailing spaces from column names
-            df['area_range'] = pd.to_numeric(df['area_range'], errors='coerce')  # Ensure area_range is numeric
+            df = df.drop_duplicates()
 
-            # Debug: Check the data before filtering
-            print("Data before filtering:", df.head())
+            df['area_range'] = pd.to_numeric(df['area_range'], errors='coerce')  # Ensure area_range is numeric
 
             # 필터링 조건 적용
             if rent_type:
@@ -127,15 +135,20 @@ def filter_apartments(request):
             if area_range is not None:
                 df = df[df['area_range'] >= area_range]
 
-            # Debug: Check the filtered data
-            print("Data after filtering:", df.head())
-
             # 결과 확인
             if df.empty:
                 return JsonResponse({'success': False, 'message': "조건에 맞는 아파트가 없습니다."}, status=404)
 
-            # 필터링된 결과를 JSON 형식으로 반환
+            # 필터링된 결과를 JSON 형식으로 반환 (7개 이하인 경우 모든 결과를 반환)
             apartments = df.to_dict(orient='records')
+
+            if len(apartments) > 7:
+                random.shuffle(apartments)
+                apartments = apartments[:7]
+
+            # Debug: Check the filtered data
+            print("Data after filtering:", apartments)
+
             return JsonResponse({'success': True, 'apartments': apartments}, status=200)
 
         except json.JSONDecodeError:
@@ -147,6 +160,8 @@ def filter_apartments(request):
 
     else:
         return JsonResponse({'success': False, 'message': "POST 요청만 허용됩니다."}, status=405)
+
+
 
 
 
