@@ -1,10 +1,20 @@
+"use client";
+
 import Link from 'next/link';
 import Image from 'next/image';
 
 import { Button } from "@/components/ui/button"
 
 
+import { useSearchParams } from 'next/navigation';
+
+
+
 export default function Chu_List() {
+    const searchParams = useSearchParams();
+    const apartmentsString = searchParams.get('apartments');
+    const apartments = apartmentsString ? JSON.parse(apartmentsString) : []; // 문자열을 배열로 다시 변환
+
     let name  = ['역삼래미안', '한강타운', 'DMC롯데캐슬퍼스', '상도롯데캐슬파크엘', '우림루미아트아파트', '북한산더샵', '신내글로리움',]
     let coment = [
         '아파트, 10평, 다세대, 신축(2018~)',
