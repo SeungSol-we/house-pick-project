@@ -19,10 +19,12 @@ from turtle import home
 from django.contrib import admin
 from django.urls import path
 from platformdirs import user_log_dir
-from . import views
+
 from catalog import views
 
 urlpatterns = [
     # ... other URL patterns
     path('api/user/', views.validate_and_process_user, name='validate_and_process_user'),
+    path('api/filter/', views.filter_apartments, name='filter_apartments'),
+
 ]

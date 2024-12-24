@@ -1,3 +1,4 @@
+import os
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -61,21 +62,19 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-
-
-@csrf_exempt  # CSRF 보호 비활성화 (API 요청에 필요한 경우)
+@csrf_exempt  # CSRF 보호 비활성화
 def filter_apartments(request):
     if request.method == 'POST':
         try:
-            # JSON 데이터를 받음
+            # JSON 데이터 파싱
             data = json.loads(request.body)
 
-            # 폼에서 전달받은 데이터
-            property_type = data.get('property_type')
-            household_type = data.get('household_type')
-            region_type = data.get('region_type')
-            direction_type = data.get('direction_type')
-            category_type = data.get('category_type')
+            # 클라이언트가 제공한 데이터 추출
+            property_type = data.get('property_type', '')
+            household_type = data.get('household_type', '')
+            region_type = data.get('region_type', '')
+            direction_type = data.get('direction_type', '')
+            category_type = data.get('category_type', '')
 
             # 조건 매핑
             rent_type = "월세" if property_type == "monthly" else "전세"
@@ -87,7 +86,7 @@ def filter_apartments(request):
                 'Chungcheongnam': "충청남도", 'Chungcheongbuk': "충청북도",
                 'Jeollabuk-do': "전라북도", 'Jeollanam-do': "전라남도",
             }
-            region = region_mapping.get(region_type, None)
+            region = region_mapping.get(region_type)
             direction = "남향" if direction_type == "south" else "북향"
             category = "아파트" if category_type == "art" else "주택"
 
@@ -102,35 +101,41 @@ def filter_apartments(request):
             elif household_type == 'four':
                 area_range = 38
 
-            # 엑셀 파일 읽기 (엑셀 경로와 파일명을 수정해야 함)
-            df = pd.read_excel('path_to_apartment_data.xlsx')
+            # 엑셀 파일 읽기
+            try:
+                file_path = os.path.join(os.path.dirname(__file__), 'apt.xlsx')
+                df = pd.read_excel(file_path)
+            except FileNotFoundError:
+                return JsonResponse({'success': False, 'message': "아파트 데이터 파일이 없습니다."}, status=500)
 
             # 필터링 조건 적용
             if rent_type:
                 df = df[df['rent_type'] == rent_type]
-            
             if region:
                 df = df[df['region'] == region]
-
             if direction:
                 df = df[df['direction'] == direction]
-
             if category:
                 df = df[df['category'] == category]
-
             if area_range is not None:
                 df = df[df['area'] >= area_range]
 
-            print(f"필터링 결과: {len(df)}건 발견")
+            # 결과 확인
+            if df.empty:
+                return JsonResponse({'success': False, 'message': "조건에 맞는 아파트가 없습니다."}, status=404)
 
             # 필터링된 결과를 JSON 형식으로 반환
             apartments = df.to_dict(orient='records')
-
-            return JsonResponse({'apartments': apartments}, status=200)
+            return JsonResponse({'success': True, 'apartments': apartments}, status=200)
 
         except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+            return JsonResponse({'success': False, 'message': "유효하지 않은 JSON 데이터입니다."}, status=400)
+
+        except Exception as e:
+            # 예상치 못한 오류 처리
+            return JsonResponse({'success': False, 'message': f"서버 오류: {str(e)}"}, status=500)
 
     else:
-        return JsonResponse({'error': 'Only POST method is allowed'}, status=405)
+        return JsonResponse({'success': False, 'message': "POST 요청만 허용됩니다."}, status=405)
+
 
