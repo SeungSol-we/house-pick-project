@@ -1,6 +1,5 @@
 "use client"
 
-import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -49,7 +48,7 @@ export default function Sign_Up() {
 
             if (response.ok && result.success) { // 성공 여부 확인
                 setMessage(result.message); // 성공 메시지
-                router.push('/sign_in/sign_in_good'); // 성공 시 이동할 페이지
+                router.push('/sign_up/sign_up_good'); // 성공 시 이동할 페이지
             } else {
                 setMessage(`Error: ${result.message}`); // 실패 메시지 (result.message가 없을 경우 대비)
             }
