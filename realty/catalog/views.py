@@ -41,7 +41,7 @@ def validate_and_process_user(request):
 
             elif action == 'login':
                 # 로그인 처리
-                user = authenticate(request, email=email, password=password)
+                user = authenticate(request, email=email, password=password)  # email 전달
                 if user is not None:
                     login(request, user)
                     return JsonResponse({'success': True, 'message': "로그인에 성공했습니다."}, status=200)

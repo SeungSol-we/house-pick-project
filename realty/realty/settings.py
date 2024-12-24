@@ -135,3 +135,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # 기본 백엔드
+    'catalog.authentication.EmailBackend',  # 실제 경로로 수정
+]
