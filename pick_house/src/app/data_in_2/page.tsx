@@ -142,7 +142,7 @@ export default function Data_1() {
                         variant="outline"
                         role="combobox"
                         aria-expanded={open2}
-                        className="w-[330px] justify-between mt-2 border-0 rounded-3xl"
+                        className="w-[330px] justify-between mt-2 border-0 rounded-3xl "
                         >
                         {value2
                             ? person.find((person) => person.value === value2)?.label

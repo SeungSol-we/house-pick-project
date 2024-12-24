@@ -1,10 +1,7 @@
 "use client"
 
-import { CircleCheck } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button"
-
-
 
  
 import * as React from "react"
@@ -203,7 +200,7 @@ export default function Data_1() {
                     </PopoverTrigger>
                     <PopoverContent className="w-[300px] p-0">
                         <Command>
-                        <CommandInput placeholder="검색 임대종류..." />
+                        <CommandInput placeholder="검색 가구수..." />
                         <CommandList>
                             <CommandEmpty>No person found.</CommandEmpty>
                             <CommandGroup>
