@@ -3,50 +3,59 @@
 import { Button } from "@/components/ui/button"
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Value } from "@radix-ui/react-select";
 
 export default function Data_1() {
-    const [propertyType, setPropertyType] = useState('');
-    const [householdType, setHouseholdType] = useState('');
-    const [regionType, setRegionType] = useState('');
-    const [directionType, setDirectionType] = useState('');
-    const [categoryType, setCategoryType] = useState('');
-    const [apartments, setApartments] = useState([]);
-    const [error, setError] = useState<string | null>(null);
-    const router = useRouter();
+  const [propertyType, setPropertyType] = useState('');
+  const [householdType, setHouseholdType] = useState('');
+  const [regionType, setRegionType] = useState('');
+  const [directionType, setDirectionType] = useState('');
+  const [categoryType, setCategoryType] = useState('');
+  const [apartments, setApartments] = useState([]);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
 
-    const getCSRFToken = (): string | null => { // 함수 반환 타입 명시
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith('csrftoken=')) {
-                return cookie.substring('csrftoken='.length, cookie.length);
-            }
-        }
-        return null; // CSRF 토큰이 없는 경우 null 반환
-    };
+  const getCSRFToken = (): string | null => { // 함수 반환 타입 명시
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.startsWith('csrftoken=')) {
+              return cookie.substring('csrftoken='.length, cookie.length);
+          }
+      }
+      return null; // CSRF 토큰이 없는 경우 null 반환
+  };
 
 
-    const handleSubmit = async () => {
-        const requestData = {
-            property_type: propertyType,
-            household_type: householdType,
-            region_type: regionType,
-            direction_type: directionType,
-            category_type: categoryType,
-        };
+  const handleSubmit = async () => {
+      const requestData = {
+          property_type: propertyType,
+          household_type: householdType,
+          region_type: regionType,
+          direction_type: directionType,
+          category_type: categoryType,
+      };
 
-        try {
+    try {
             const csrftoken = getCSRFToken();
-            const response = await fetch('http://localhost:8000/api/user/', { // API 엔드포인트 수정
+
+            // CSRF 토큰이 없으면 오류 처리
+            if (!csrftoken) {
+                setError('CSRF 토큰을 찾을 수 없습니다.');
+                return;
+            }
+
+            const response = await fetch('http://localhost:8000/api/filter/', { // API 엔드포인트 확인
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken,
+                    'X-CSRFToken': csrftoken, // csrftoken이 항상 문자열임을 보장
                 },
                 body: JSON.stringify(requestData),
             });
 
+            
             if (response.ok) {
                 const data = await response.json();
                 setApartments(data.apartments); // 필터링된 아파트 데이터 설정
@@ -57,16 +66,17 @@ export default function Data_1() {
                 const errorData = await response.json();
                 setError(errorData.error || '필터링 요청 실패'); // 에러 메시지 설정
             }
-        } catch (error) {
+
+            // ... (나머지 코드 - response 처리, 페이지 이동)
+        } catch (error: any) { // any 타입으로 변경하여 error.message 접근
             console.error('Error:', error);
-            setError('서버와의 통신 중 오류가 발생했습니다.');
+            setError(error.message || '서버와의 통신 중 오류가 발생했습니다.'); // error.message 사용, 없으면 기본 메시지
         }
     };
 
     return (
-      <div>
-        {/* ... (기존 JSX) */}
-        <div className="w-full h-{100vh} bg-[#FFF6FE] ">
+      <div className="flex justify-center">
+        <div className="w-full h-{100vh} bg-[#FFF6FE]">
           <div className="px-5 pt-8 w-{100vw} h-{100vh}">
               <p className="w-auto h-auto text-3xl ">선호하시는 집</p>
               <p className="w-auto h-auto text-3xl font-bold">정보를 입력해주세요</p>

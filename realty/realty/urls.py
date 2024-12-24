@@ -24,6 +24,5 @@ from catalog import views
 
 urlpatterns = [
     # ... other URL patterns
-    path('api/filter/', views.filter_apartments, name='filter_apartments'), # api/filter/ 로 수정
     path('api/user/', views.validate_and_process_user, name='validate_and_process_user'),
 ]
