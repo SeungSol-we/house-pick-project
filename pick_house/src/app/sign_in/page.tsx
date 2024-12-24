@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 export default function Sign_In() {
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [message, setMessage] = useState('');
     const router = useRouter();
 
@@ -29,6 +30,7 @@ export default function Sign_In() {
         action,
         password,
         email,
+        username,
         };
 
         try {
