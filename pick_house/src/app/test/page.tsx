@@ -5,6 +5,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Value } from "@radix-ui/react-select";
 
+import { getCSRFToken } from '../utils/csrf';
+
 export default function Data_1() {
   const [propertyType, setPropertyType] = useState('');
   const [householdType, setHouseholdType] = useState('');
@@ -16,62 +18,36 @@ export default function Data_1() {
   const router = useRouter();
 
 
-  const getCSRFToken = (): string | null => { // 함수 반환 타입 명시
-      const cookies = document.cookie.split(';');
-      for (let i = 0; i < cookies.length; i++) {
-          const cookie = cookies[i].trim();
-          if (cookie.startsWith('csrftoken=')) {
-              return cookie.substring('csrftoken='.length, cookie.length);
-          }
-      }
-      return null; // CSRF 토큰이 없는 경우 null 반환
-  };
-
-
   const handleSubmit = async () => {
-      const requestData = {
-          property_type: propertyType,
-          household_type: householdType,
-          region_type: regionType,
-          direction_type: directionType,
-          category_type: categoryType,
-      };
+    const requestData = {
+        property_type: propertyType,
+        household_type: householdType,
+        region_type: regionType,
+        // direction_type: directionType,  test.tsx에서는 사용되지 않음
+        // category_type: categoryType,    test.tsx에서는 사용되지 않음
+    };
 
     try {
-            const csrftoken = getCSRFToken();
+      const csrftoken = getCSRFToken();
 
-            // CSRF 토큰이 없으면 오류 처리
-            if (!csrftoken) {
-                setError('CSRF 토큰을 찾을 수 없습니다.');
-                return;
-            }
+      if (!csrftoken) {
+          setError('CSRF 토큰을 찾을 수 없습니다.');
+          return;
+      }
 
-            const response = await fetch('http://localhost:8000/api/filter/', { // API 엔드포인트 확인
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrftoken, // csrftoken이 항상 문자열임을 보장
-                },
-                body: JSON.stringify(requestData),
-            });
+      // test.tsx에서는 필터링 요청을 보내지 않음
+      // 바로 test2.tsx로 데이터 전달
 
-            
-            if (response.ok) {
-                const data = await response.json();
-                setApartments(data.apartments); // 필터링된 아파트 데이터 설정
-                setError(null); // 에러 초기화
-                router.push('/test2'); //페이지 이동 경로로
+      sessionStorage.setItem('property_type', propertyType);
+      sessionStorage.setItem('household_type', householdType);
+      sessionStorage.setItem('region_type', regionType);
 
-            } else {
-                const errorData = await response.json();
-                setError(errorData.error || '필터링 요청 실패'); // 에러 메시지 설정
-            }
+      router.push('/test2'); // test2.tsx로 이동
 
-            // ... (나머지 코드 - response 처리, 페이지 이동)
-        } catch (error: any) { // any 타입으로 변경하여 error.message 접근
-            console.error('Error:', error);
-            setError(error.message || '서버와의 통신 중 오류가 발생했습니다.'); // error.message 사용, 없으면 기본 메시지
-        }
+      } catch (error: any) {
+          console.error('Error:', error);
+          setError(error.message || '서버와의 통신 중 오류가 발생했습니다.');
+      }
     };
 
     return (

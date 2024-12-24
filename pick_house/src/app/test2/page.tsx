@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button"
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function Data_1() {
+import { getCSRFToken } from '../utils/csrf';
+
+export default function Data_2() {
     const [propertyType, setPropertyType] = useState('');
     const [householdType, setHouseholdType] = useState('');
     const [regionType, setRegionType] = useState('');
@@ -15,19 +17,11 @@ export default function Data_1() {
     const router = useRouter();
 
 
-    const getCSRFToken = (): string | null => {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.startsWith('csrftoken=')) {
-                return cookie.substring('csrftoken='.length, cookie.length);
-            }
-        }
-        return null;
-    };
-
-
     const handleSubmit = async () => {
+        const propertyType = sessionStorage.getItem('property_type') || ''; // 가져오기
+        const householdType = sessionStorage.getItem('household_type') || '';// 가져오기
+        const regionType = sessionStorage.getItem('region_type') || '';// 가져오기
+        
         const requestData = {
             property_type: propertyType,
             household_type: householdType,
@@ -60,8 +54,12 @@ export default function Data_1() {
 
                 // 쿼리 파라미터로 데이터 전달
                 const queryParams = new URLSearchParams();
-                queryParams.set('apartments', JSON.stringify(data.apartments)); // apartments를 문자열로 변환하여 쿼리 파라미터에 추가
-                router.push(`/chu_list?${queryParams.toString()}`);
+                sessionStorage.setItem('apartments', JSON.stringify(data.apartments));
+                router.push('/chu_list');
+
+            } else if (response.status === 404) {
+                setError("조건에 맞는 아파트가 없습니다.");
+
             } else {
                 const errorData = await response.json();
                 setError(errorData.error || '필터링 요청 실패');
@@ -84,8 +82,8 @@ export default function Data_1() {
               <div className="w-full h-12 justify-between mt-2 border-0 rounded-3xl bg-white flex align-middle p-4">
                 <select value={directionType} onChange={(e) => setDirectionType(e.target.value)} className="w-full">
                   <option value="">향 방향 선택</option>
-                  <option value="monthly">남향</option>
-                  <option value="deposit">북향</option>
+                  <option value="south">남향</option>
+                  <option value="north">북향</option>
                 </select>
               </div>
                 
@@ -95,9 +93,9 @@ export default function Data_1() {
               <p className="w-full h-auto mt-6 text-base font-semibold ">건물 유형 여부는?</p>
               <div className="w-full h-12 justify-between mt-2 border-0 rounded-3xl bg-white flex align-middle p-4">
                 <select value={categoryType} onChange={(e) => setCategoryType(e.target.value)} className="w-full">
-                  <option value="">선호 지역 선택</option>
-                  <option value="Seoul">아파트</option>
-                  <option value="daejeon">주택</option>
+                  <option value="">선호 건물 유형 선택</option>
+                  <option value="art">아파트</option>
+                  <option value="house">주택</option>
                 </select>
               </div>
 
