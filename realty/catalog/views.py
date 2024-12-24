@@ -93,13 +93,13 @@ def filter_apartments(request):
             # 면적 범위 설정
             area_range = None
             if household_type == 'one':
-                area_range = 0
+                area_range = int(0)
             elif household_type == 'two':
-                area_range = 13
+                area_range = int(13)
             elif household_type == 'three':
-                area_range = 25
+                area_range = int(25)
             elif household_type == 'four':
-                area_range = 38
+                area_range = int(38)
 
             # 엑셀 파일 읽기
             try:
@@ -108,17 +108,27 @@ def filter_apartments(request):
             except FileNotFoundError:
                 return JsonResponse({'success': False, 'message': "아파트 데이터 파일이 없습니다."}, status=500)
 
+            # Clean column names (strip whitespace) and ensure correct types
+            df.columns = df.columns.str.strip()  # Remove any leading/trailing spaces from column names
+            df['area_range'] = pd.to_numeric(df['area_range'], errors='coerce')  # Ensure area_range is numeric
+
+            # Debug: Check the data before filtering
+            print("Data before filtering:", df.head())
+
             # 필터링 조건 적용
             if rent_type:
                 df = df[df['rent_type'] == rent_type]
             if region:
-                df = df[df['region'] == region]
+                df = df[df['region_type'] == region]
             if direction:
                 df = df[df['direction'] == direction]
             if category:
                 df = df[df['category'] == category]
             if area_range is not None:
                 df = df[df['area_range'] >= area_range]
+
+            # Debug: Check the filtered data
+            print("Data after filtering:", df.head())
 
             # 결과 확인
             if df.empty:
@@ -137,5 +147,6 @@ def filter_apartments(request):
 
     else:
         return JsonResponse({'success': False, 'message': "POST 요청만 허용됩니다."}, status=405)
+
 
 
