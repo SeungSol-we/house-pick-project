@@ -118,7 +118,7 @@ def filter_apartments(request):
             if category:
                 df = df[df['category'] == category]
             if area_range is not None:
-                df = df[df['area'] >= area_range]
+                df = df[df['area_range'] >= area_range]
 
             # 결과 확인
             if df.empty:
