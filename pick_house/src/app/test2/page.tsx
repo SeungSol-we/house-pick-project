@@ -24,7 +24,7 @@ export default function Sign_In() {
         return ""; // 토큰이 없으면 빈 문자열 반환
     };
 
-     const handleSubmit = async (action : string) => {
+    const handleSubmit = async (action : string) => {
         const requestData = {
         action,
         password,
@@ -49,7 +49,7 @@ export default function Sign_In() {
                 setMessage(result.message); // 성공 메시지
                 router.push('/sign_in/sign_in_good'); // 성공 시 이동할 페이지
             } else {
-                setMessage(`Error: ${result.message || '로그인 실패'}`); // 실패 메시지 (result.message가 없을 경우 대비)
+                setMessage(`Error: ${result.message}`); // 실패 메시지 (result.message가 없을 경우 대비)
             }
         } catch (error) {
             console.error('Error:', error);

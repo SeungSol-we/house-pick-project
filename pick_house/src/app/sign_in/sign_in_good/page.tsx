@@ -1,6 +1,5 @@
 import Image from "next/image";
 
-import { MoveDown } from 'lucide-react';
 import { CircleCheck } from 'lucide-react';
 
 import { Button } from "@/components/ui/button"

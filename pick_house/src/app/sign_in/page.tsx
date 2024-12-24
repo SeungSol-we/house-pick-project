@@ -1,19 +1,30 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-
 import Link from 'next/link';
-
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 
 export default function Sign_In() {
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
     const [message, setMessage] = useState('');
+    const router = useRouter();
 
 
-     const handleSubmit = async (action : string) => {
+    const getCSRFToken = () => {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.startsWith('csrftoken=')) {
+            return cookie.substring('csrftoken='.length, cookie.length);
+          }
+        }
+        return ""; // 토큰이 없으면 빈 문자열 반환
+    };
+
+    const handleSubmit = async (action : string) => {
         const requestData = {
         action,
         password,
@@ -21,22 +32,28 @@ export default function Sign_In() {
         };
 
         try {
-        const response = await fetch('http://localhost:8000/api/user/', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(requestData),
-            credentials: 'include',  // 세션 쿠키를 포함하도록 설정
-        });
+            const csrftoken = getCSRFToken();
+            const response = await fetch('http://localhost:8000/api/user/', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken, // CSRF 토큰 추가
+                },
+                body: JSON.stringify(requestData),
+                credentials: 'include', 
+            });
 
-        const result = await response.json();
-        if (response.ok) {
-            setMessage(result.message); // 성공 메시지
-        } else {
-            setMessage(`Error: ${result.message}`); // 실패 메시지
-        }
+            const result = await response.json();
+
+            if (response.ok && result.success) { // 성공 여부 확인
+                setMessage(result.message); // 성공 메시지
+                router.push('/sign_in/sign_in_good'); // 성공 시 이동할 페이지
+            } else {
+                setMessage(`Error: ${result.message}`); // 실패 메시지 (result.message가 없을 경우 대비)
+            }
         } catch (error) {
-        console.error('Error:', error);
-        setMessage('서버와의 통신 중 오류가 발생했습니다.');
+            console.error('Error:', error);
+            setMessage('서버와의 통신 중 오류가 발생했습니다.');
         }
     };
 
@@ -58,14 +75,16 @@ export default function Sign_In() {
         type="email" 
         placeholder="여기에 이메일을 입력해 주세요" 
         value={email}
-        onChange={(e) => setEmail(e.target.value)}/>
+        onChange={(e) => setEmail(e.target.value)}
+        />
 
          <p className="w-full h-auto mt-5 text-base">비밀번호를 입력해 주세요</p>
         <input className="w-full h-12 mt-2 px-4 text-xs text-red-300 bg-white rounded-full focus:outline-none " 
         type="password" 
         placeholder="여기에 비밀번호를 입력해 주세요" 
         value={password}
-        onChange={(e) => setPassword(e.target.value)}/>
+        onChange={(e) => setPassword(e.target.value)}
+        />
 
         <p>{message}</p>
 
@@ -73,18 +92,16 @@ export default function Sign_In() {
             <Link href="/sign_in/sign_idk" className="text-pink-500 w-auto text-xs font-bold">비밀번호/이메일이 기억나지 않나요?</Link>
         </div>
         
-
         <div className="w-full h-[15rem] pt-40">
-            <Link href="/sign_in/sign_in_good" className="w-32 h-12">
-                <Button variant="outline" className="border-[#C299AB] w-full h-12 border-2 rounded-3xl text-[#FF70BA] font-extrabold">
+             {/* Link 제거, onClick 핸들러 추가 */}
+                <Button variant="outline" 
+                        className="border-[#C299AB] w-full h-12 border-2 rounded-3xl text-[#FF70BA] font-extrabold"
+                        onClick={() => handleSubmit('login')}> {/* action 값 전달 */}
                     로그인하기
                 </Button>
-            </Link>
         </div>
 
-        
-        
     </div>
+        
   );
 }
-
