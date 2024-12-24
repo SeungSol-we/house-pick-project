@@ -13,36 +13,18 @@ import { useSearchParams } from 'next/navigation';
 export default function Chu_List() {
     const searchParams = useSearchParams();
     const apartmentsString = searchParams.get('apartments');
-    const apartments = apartmentsString ? JSON.parse(apartmentsString) : []; // 문자열을 배열로 다시 변환
+    const apartments = apartmentsString ? JSON.parse(decodeURIComponent(apartmentsString)) : []; // URL 디코딩 추가
 
-    let name  = ['역삼래미안', '한강타운', 'DMC롯데캐슬퍼스', '상도롯데캐슬파크엘', '우림루미아트아파트', '북한산더샵', '신내글로리움',]
-    let coment = [
-        '아파트, 10평, 다세대, 신축(2018~)',
-        '아파트, 11평, 다세대, 신축(2022~)',
-        '아파트, 8평, 다세대, 신축(2021~)',
-        '아파트, 12평, 다세대, 신축(2019~)',
-        '아파트, 6평, 다세대, 신축(2020~)',
-        '아파트, 8평, 다세대, 신축(2023~)',
-        '아파트, 12평, 다세대, 신축(2022~)',
-    ]
-    let date = [
-        '2018년 7월',
-        '2022년 10월',
-        '2021년 6월',
-        '2019년 9월',
-        '2020년 12월',
-        '2023년 11월',
-        '2022년 8월',
-    ]
-    let price = [
-        '6000/80',
-        '6033/50',
-        '5033/50',
-        '7033/80',
-        '9000/70',
-        '10000/84',
-        '4000/30',  
-    ]
+    console.log(apartments)
+
+    let imageSrc = null;
+
+    if (apartments[8] === '아파트') {
+      imageSrc = '/apt.jpg';
+    } else if (apartments[8] === '주택') {
+      imageSrc = '/house.jpeg';
+    }
+
 
 
   return (
@@ -54,25 +36,28 @@ export default function Chu_List() {
         
         <div className="w-24 h-6 pt-1 flex justify-center mt-8 text-xs rounded-2xl bg-white">
             서울특별시 ▼
-        </div>
-        {
-            name.map((a, i) => (
-                <div className='w-full h-[7rem] bg-white flex mt-4 rounded-2xl' key={'a'+i}>
-                    <div className='w-20 h-20 m-3'>
-                        <Image className=' rounded-2xl' src="/apt.jpg" alt="아파트" width={100} height={100} ></Image>
-                    </div>
-                    <div className='pt-3'>
-                        <p className='font-bold text-xl'>{a}</p>
-                        <p className='text-xs text-[#4A3941] pt-1 font-bold'>{coment[i]}</p>
-                        <p className='text-xs text-[#4A3941] font-bold'>계약일: {date[i]}</p>
-                        <p className='font-bold text-[#FF70BA] pt-1 text-lg'>보증금/월세: {price[i]}</p>
-                    </div>
-                    <div className='w-12 text-[#F5E1EB] flex justify-center pt-10 text-2xl'>
-                        ★
-                    </div>
-                </div>       
-            ))
-        }
+        {apartments.map((a:any, i:number) => (
+          <div className='w-full h-[7rem] bg-white flex mt-4 rounded-2xl' key={i}>
+              <div className='w-20 h-20 m-3'>
+                {imageSrc && ( // imageSrc가 null이 아니면 렌더링
+                  <Image
+                      className='rounded-2xl'
+                      src={imageSrc}
+                      alt="아파트 또는 주택"
+                      width={100}
+                      height={100}
+                  />
+                )}
+              </div>
+              <div className='pt-3'>
+                  <p className='font-bold text-xl'>{a.name}</p>
+                  <p className='text-xs text-[#4A3941] pt-1 font-bold'>{a.area}</p>
+                  <p className='text-xs text-[#4A3941] font-bold'>계약일: {a.계약년월}</p> {/* 계약년월 속성 이름 확인 */}
+                  <p className='font-bold text-[#FF70BA] pt-1 text-lg'>보증금/월세: {a.보증금} / {a.월세금}</p> {/* 보증금, 월세금 속성 이름 확인 */}
+              </div>
+              {/* ... */}
+          </div>
+      ))}
         <div className='w-full h-auto flex justify-center mt-4'>
             <p className='text-sm font-bold text-[#C299AB]'>보증금과 월세는 만 원 단위예요</p>
         </div>
@@ -88,6 +73,6 @@ export default function Chu_List() {
         </Link>
       </div>
     </div>
+  </div>
   );
 }
-
