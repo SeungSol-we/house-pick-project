@@ -100,7 +100,7 @@ export default function Data_1() {
                   <option value="one">1인가구</option>
                   <option value="two">2인가구</option>
                   <option value="three">3인가구</option>
-                  <option value="fore">4인가구</option>
+                  <option value="four">4인가구</option>
                 </select>
               </div>
 
@@ -108,20 +108,21 @@ export default function Data_1() {
               <div className="w-full h-12 justify-between mt-2 border-0 rounded-3xl bg-white flex align-middle p-4">
                 <select value={regionType} onChange={(e) => setRegionType(e.target.value)} className="w-full">
                   <option value="">선호 지역 선택</option>
-                  <option value="one">서울</option>
-                  <option value="two">대전</option>
-                  <option value="two">세종</option>
-                  <option value="two">대구</option>
-                  <option value="two">울산</option>
-                  <option value="two">부산</option>
-                  <option value="two">광주</option>
-                  <option value="two">경기도</option>
-                  <option value="two">강원도</option>
-                  <option value="two">경상북도</option>
-                  <option value="two">경상남도</option>
-                  <option value="two">충청남도</option>
-                  <option value="two">전라북도</option>
-                  <option value="two">전라남도</option>
+                  <option value="Seoul">서울</option>
+                  <option value="daejeon">대전</option>
+                  <option value="Sejong">세종</option>
+                  <option value="daegu">대구</option>
+                  <option value="Ulsan">울산</option>
+                  <option value="busan">부산</option>
+                  <option value="gwangju">광주</option>
+                  <option value="gyeonggi">경기도</option>
+                  <option value="Gangwon">강원도</option>
+                  <option value="Gyeongsangbuk">경상북도</option>
+                  <option value="Gyeongsangnam">경상남도</option>
+                  <option value="Chungcheongnam">충청남도</option>
+                  <option value="Chungcheongbuk">충청북북도</option>
+                  <option value="Jeollabuk-do">전라북도</option>
+                  <option value="Jeollanam-do">전라남도</option>
                   {/* ... */}
                 </select>
               </div>
