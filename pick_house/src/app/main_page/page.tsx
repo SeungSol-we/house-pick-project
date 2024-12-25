@@ -14,6 +14,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 
 interface Apartment {  // Apartment 타입 정의
@@ -28,20 +29,42 @@ interface Apartment {  // Apartment 타입 정의
 }
 
 export default function Main_page() {
-    const searchParams = useSearchParams(); // useSearchParams 호출 결과 할당
+    const searchParams = useSearchParams();
+    const [otherApartments, setOtherApartments] = useState<Apartment[]>([]);
+    const [loading, setLoading] = useState(true); // 로딩 상태 추가
+    const [error, setError] = useState<string | null>(null); // 에러 상태 추가
 
-    const other_apartmentsString = searchParams.get('other_apartments');
-    let other_apartments: Apartment[] = [];
 
-    if (other_apartmentsString) {
-        try {
-            other_apartments = JSON.parse(decodeURIComponent(other_apartmentsString));
-        } catch (error) {
-            console.error("Error parsing other_apartments:", error);
+    useEffect(() => {
+        const otherApartmentsString = searchParams.get('other_apartments');
+
+        if (otherApartmentsString) {
+            try {
+                const parsedData: Apartment[] = JSON.parse(decodeURIComponent(otherApartmentsString));
+                setOtherApartments(parsedData);
+            } catch (parseError) {
+                console.error("Error parsing other_apartments:", parseError);
+                setError("Error parsing apartment data."); // 에러 메시지 설정
+            } finally {
+                setLoading(false); // 로딩 완료
+            }
+        } else {
+            setLoading(false); // other_apartments 파라미터가 없으면 로딩 완료로 설정, 빈 배열 유지
         }
+    }, [searchParams]);
+
+
+
+    if (loading) {
+        return <div>Loading...</div>; // 로딩 중 표시
     }
 
-    console.log(other_apartments)
+    if (error) {
+        return <div>Error: {error}</div>; // 에러 메시지 표시
+    }
+
+    console.log(otherApartments);
+
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">
         <div className="flex">
@@ -111,7 +134,7 @@ export default function Main_page() {
                 <p className="text-xl font-bold ml-24 text-[#C299AB]">3개</p>
             </div>
 
-            {other_apartments.map((a:any, i:number) => (
+            {otherApartments.map((a:any, i:number) => (
                 <div className='w-full h-auto bg-white flex mt-4 rounded-2xl' key={i}>
                     <div className='w-20 h-20 m-3'>
                     {a.category === '아파트' || a.category === '주택' ? (
