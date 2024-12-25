@@ -1,9 +1,10 @@
 import os
+from urllib.parse import urlencode
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 import json
-from django.urls import path
+from django.urls import path, reverse
 
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import User
@@ -156,20 +157,20 @@ def filter_apartments(request):
             # 필터링된 결과를 JSON 형식으로 반환 (7개 이하인 경우 모든 결과를 반환)
             apartments = df.to_dict(orient='records')
 
-            if len(apartments) > 7:
-                random.shuffle(apartments)
-                apartments = apartments[:7]
+            # 랜덤으로 7개 추출
+            random.shuffle(apartments)
+            main_apartments = apartments[:7] if len(apartments) > 7 else apartments
 
-            if len(apartments) > 3:
-                otherapartments = apartments
-                random.shuffle(otherapartments)
-                otherapartments = otherapartments[:3]
+            # 랜덤으로 3개 추출
+            other_apartments = apartments[:3] if len(apartments) > 3 else apartments
 
-            # Debug: Check the filtered data
-            print("Data after filtering:", apartments)
-            print("Data after filtering:", otherapartments)
-
-            return JsonResponse({'success': True, 'apartments': apartments, 'otherapartments' : otherapartments}, status=200)
+            return JsonResponse({
+                'success': True,
+                'apartments': main_apartments,
+                'redirect_url': reverse('main_page') + '?' + urlencode({
+                    'other_apartments': json.dumps(other_apartments, ensure_ascii=False)
+            }, status=200)
+            })
 
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'message': "유효하지 않은 JSON 데이터입니다."}, status=400)

@@ -15,6 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from atexit import register
+from pydoc import plain_pager
 from turtle import home
 from django.contrib import admin
 from django.urls import path
@@ -26,6 +27,7 @@ urlpatterns = [
     # ... other URL patterns
     path('api/user/', views.validate_and_process_user, name='validate_and_process_user'),
     path('api/filter/', views.filter_apartments, name='filter_apartments'),
+    path('main_page/', plain_pager.as_view(), name='main_page'),
 
 
 ]
