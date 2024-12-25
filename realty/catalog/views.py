@@ -160,10 +160,16 @@ def filter_apartments(request):
                 random.shuffle(apartments)
                 apartments = apartments[:7]
 
+            if len(apartments) > 3:
+                otherapartments = apartments
+                random.shuffle(otherapartments)
+                otherapartments = otherapartments[:3]
+
             # Debug: Check the filtered data
             print("Data after filtering:", apartments)
+            print("Data after filtering:", otherapartments)
 
-            return JsonResponse({'success': True, 'apartments': apartments}, status=200)
+            return JsonResponse({'success': True, 'apartments': apartments, 'otherapartments' : otherapartments}, status=200)
 
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'message': "유효하지 않은 JSON 데이터입니다."}, status=400)
