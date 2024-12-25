@@ -1,3 +1,4 @@
+
 "use client";
 
 import Link from 'next/link';
@@ -9,11 +10,14 @@ import { Button } from "@/components/ui/button"
 import { useSearchParams } from 'next/navigation';
 
 
-
 export default function Chu_List() {
     const searchParams = useSearchParams();
     const apartmentsString = searchParams.get('apartments');
-    const apartments = apartmentsString ? JSON.parse(decodeURIComponent(apartmentsString)) : []; // URL 디코딩 추가
+    const apartments = apartmentsString ? JSON.parse(decodeURIComponent(apartmentsString)) : [];
+    
+    // URL 디코딩 추가
+
+    console.log(apartments)
 
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">

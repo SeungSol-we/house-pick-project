@@ -68,6 +68,23 @@ def validate_and_process_user(request):
 
     return JsonResponse({'success': False, 'message': "허용되지 않은 요청 방식입니다."}, status=405)
 
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+
+@login_required(login_url=None)  # 리다이렉트 대신 None 설정
+@csrf_protect
+def get_user_data(request):
+    if request.method == "GET":
+        return JsonResponse({
+            'username': request.user.username,
+            'email': request.user.email,
+        })
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
 
 import pandas as pd
 from django.shortcuts import redirect, render

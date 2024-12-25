@@ -23,10 +23,14 @@ from platformdirs import user_log_dir
 
 from catalog import views
 
+from catalog.views import get_user_data 
+
+
 urlpatterns = [
     # ... other URL patterns
     path('api/user/', views.validate_and_process_user, name='validate_and_process_user'),
     path('api/filter/', views.filter_apartments, name='filter_apartments'),
+    path('api/userget/', views.get_user_data, name='get_user_data'), # 새 URL 추가
 
 
 ]

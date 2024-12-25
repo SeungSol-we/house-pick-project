@@ -14,56 +14,61 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-
-interface Apartment {  // Apartment 타입 정의
-    homename: string;
-    rent_type: string;
-    category: string;
-    direction: string;
-    계약년월: string; // 필드명 확인
-    보증금: number; // 필드명 확인
-    월세금: number; // 필드명 확인
-    // ... 필요한 다른 필드 추가
-}
 
 export default function Main_page() {
-    const searchParams = useSearchParams();
-    const [otherApartments, setOtherApartments] = useState<Apartment[]>([]);
-    const [loading, setLoading] = useState(true); // 로딩 상태 추가
-    const [error, setError] = useState<string | null>(null); // 에러 상태 추가
+    // const searchParams = useSearchParams();
+    // const apartmentsString = searchParams.get('apartments');
+    // const apartments = apartmentsString ? JSON.parse(decodeURIComponent(apartmentsString)) : []; // URL 디코딩 추가
 
+    // console.log(apartments);
+    
+
+    const apartments:any = [
+    {region_type: '서울특별시', homename: '중앙하이츠', rent_type: '전세', area_range: 59.85, 계약년월: 202412, category: '아파트', 보증금: "45,000", 월세금: "25", direction: "남향"},
+    {region_type: '서울특별시', homename: '흑석한강센트레빌', rent_type: '전세', area_range: 84.84, 계약년월: 202411, category: '아파트', 보증금: "3,000", 월세금: "80", direction: "남향"},
+    {region_type: '서울특별시', homename: '중앙하이츠', rent_type: '전세', area_range: 59.85, 계약년월: 202412, category: '아파트', 보증금: "16,000", 월세금: "30", direction: "남향"},
+    ]
+
+    const getCsrfToken = () => {
+    const csrfCookie = document.cookie
+        .split('; ')
+        .find(row => row.startsWith('csrftoken='));
+        return csrfCookie ? csrfCookie.split('=')[1] : '';
+    };
+
+    const [username, setUsername] = useState("");
 
     useEffect(() => {
-        const otherApartmentsString = searchParams.get('other_apartments');
-
-        if (otherApartmentsString) {
+        const fetchUserData = async () => {
             try {
-                const parsedData: Apartment[] = JSON.parse(decodeURIComponent(otherApartmentsString));
-                setOtherApartments(parsedData);
-            } catch (parseError) {
-                console.error("Error parsing other_apartments:", parseError);
-                setError("Error parsing apartment data."); // 에러 메시지 설정
-            } finally {
-                setLoading(false); // 로딩 완료
+                const csrfToken = getCsrfToken();
+                const response = await fetch('http://127.0.0.1:8000/api/userget/', {
+                    method: 'GET',
+                    credentials: 'include',  // 세션 쿠키 포함
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                    },
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setUsername(data.username);
+                } else if (response.status === 401) {
+                    console.error("사용자 인증 실패: 로그인 필요");
+                    // 로그인 페이지로 리다이렉트
+                    window.location.href = '/login';
+                } else {
+                    console.error("API 요청 실패:", response.status);
+                }
+            } catch (error) {
+                console.error("사용자 데이터 가져오기 오류:", error);
             }
-        } else {
-            setLoading(false); // other_apartments 파라미터가 없으면 로딩 완료로 설정, 빈 배열 유지
-        }
-    }, [searchParams]);
+        };
 
-
-
-    if (loading) {
-        return <div>Loading...</div>; // 로딩 중 표시
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>; // 에러 메시지 표시
-    }
-
-    console.log(otherApartments);
+        fetchUserData();
+    }, []);
 
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">
@@ -78,7 +83,7 @@ export default function Main_page() {
         </div>
         
         <div className="px-3 mt-5 w-{100vw} h-{100vh}">
-            <p className="text-xl font-bold mb-5">표한빈님, 환영합니다!</p>
+            <p className="text-xl font-bold mb-5">{username ? `${username}님, 환영합니다!` : "환영합니다!"}</p>
             <div className="flex w-full h-12 mt-2 px-4 bg-white rounded-full ">
                 <input className="w-[95%] h-12  text-xs text-red-300 focus:outline-none" placeholder="찾으시려는 집을 입력해 보세요..."/>
                 <div className="mt-[0.85rem] ">
@@ -134,7 +139,7 @@ export default function Main_page() {
                 <p className="text-xl font-bold ml-24 text-[#C299AB]">3개</p>
             </div>
 
-            {otherApartments.map((a:any, i:number) => (
+            {apartments.map((a:any, i:number) => (
                 <div className='w-full h-auto bg-white flex mt-4 rounded-2xl' key={i}>
                     <div className='w-20 h-20 m-3'>
                     {a.category === '아파트' || a.category === '주택' ? (
