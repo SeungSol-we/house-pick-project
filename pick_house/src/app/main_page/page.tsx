@@ -32,12 +32,12 @@ export default function Main_page() {
 
     const other_apartmentsString = searchParams.get('other_apartments');
     let other_apartments: Apartment[] = [];
-    
+
     if (other_apartmentsString) {
         try {
-            other_apartments = JSON.parse(decodeURIComponent(other_apartmentsString)); // URL 디코딩 유지
+            other_apartments = JSON.parse(decodeURIComponent(other_apartmentsString));
         } catch (error) {
-            console.error("Error parsing other_apartments:", error); // 에러 처리
+            console.error("Error parsing other_apartments:", error);
         }
     }
 

@@ -27,4 +27,5 @@ urlpatterns = [
     path('api/user/', views.validate_and_process_user, name='validate_and_process_user'),
     path('api/filter/', views.filter_apartments, name='filter_apartments'),
 
+
 ]

@@ -153,21 +153,23 @@ def filter_apartments(request):
             if df.empty:
                 return JsonResponse({'success': False, 'message': "조건에 맞는 아파트가 없습니다."}, status=404)
 
-            # 필터링된 결과를 JSON 형식으로 반환
+            # 필터링된 결과를 JSON 형식으로 반환 (7개 이하인 경우 모든 결과를 반환)
             apartments = df.to_dict(orient='records')
 
-            # 랜덤으로 7개 추출
-            random.shuffle(apartments)
-            main_apartments = apartments[:7] if len(apartments) > 7 else apartments
+            if len(apartments) > 7:
+                random.shuffle(apartments)
+                apartments = apartments[:7]
 
-            # 랜덤으로 3개 추출
-            other_apartments = apartments[:3] if len(apartments) > 3 else apartments
+            if len(apartments) > 3:
+                otherapartments = apartments
+                random.shuffle(otherapartments)
+                otherapartments = otherapartments[:3]
 
-            return JsonResponse({
-                'success': True,
-                'apartments': main_apartments,
-                'other_apartments': other_apartments
-            }, status=200)
+            # Debug: Check the filtered data
+            print("Data after filtering:", apartments)
+            print("Data after filtering:", otherapartments)
+
+            return JsonResponse({'success': True, 'apartments': apartments, 'otherapartments' : otherapartments}, status=200)
 
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'message': "유효하지 않은 JSON 데이터입니다."}, status=400)
@@ -178,6 +180,8 @@ def filter_apartments(request):
 
     else:
         return JsonResponse({'success': False, 'message': "POST 요청만 허용됩니다."}, status=405)
+
+
 
 
 
