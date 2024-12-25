@@ -11,6 +11,13 @@ import { Calculator } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { useEffect, useState } from 'react';
+
+export interface User {
+    username?: string;
+    email?: string;
+}
+
 export default function Main_page() {
     let name  = ['역삼래미안', '한강타운', 'DMC롯데캐슬퍼스',]
     let coment = [
@@ -28,6 +35,30 @@ export default function Main_page() {
         '6033/50',
         '5033/50',
     ]
+
+    const [user, setUser] = useState(null); // user 상태를 null로 초기화
+    
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await fetch('/api/user/'); // trailing slash 추가
+                if (response.ok) {
+                    const data = await response.json();
+                    setUser(data); // 전체 user 데이터 설정
+                } else if (response.status === 401) {
+                    window.location.href = '/sign_in';
+                }
+                 else {
+                    console.error("유저 정보 가져오기 실패:", response.status);
+                }
+            } catch (error) {
+                console.error("유저 정보 가져오기 중 오류 발생:", error);
+            }
+        };
+
+        fetchUserData();
+    }, []);
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">
         <div className="flex">
@@ -41,7 +72,10 @@ export default function Main_page() {
         </div>
         
         <div className="px-3 mt-5 w-{100vw} h-{100vh}">
-            <p className="text-xl font-bold mb-5">표한빈님, 환영합니다!</p>
+            {/* user가 null이 아니면 username을 표시하고, 그렇지 않으면 "로그인해주세요"를 표시합니다. */}
+                <p className="text-xl font-bold mb-5">
+                    {user?.username ?? "로그인해주세요"}
+                </p>
             <div className="flex w-full h-12 mt-2 px-4 bg-white rounded-full ">
                 <input className="w-[95%] h-12  text-xs text-red-300 focus:outline-none" placeholder="찾으시려는 집을 입력해 보세요..."/>
                 <div className="mt-[0.85rem] ">
