@@ -1,241 +1,113 @@
 "use client"
 
-import { CircleCheck } from 'lucide-react';
-import Link from 'next/link';
 import { Button } from "@/components/ui/button"
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+import { getCSRFToken } from '../utils/csrf';
+
+export default function Data_2() {
+    const [propertyType, setPropertyType] = useState('');
+    const [householdType, setHouseholdType] = useState('');
+    const [regionType, setRegionType] = useState('');
+    const [directionType, setDirectionType] = useState('');
+    const [categoryType, setCategoryType] = useState('');
+    const [apartments, setApartments] = useState([]);
+    const [error, setError] = useState<string | null>(null);
+    const router = useRouter();
 
 
+    const handleSubmit = async () => {
+        const propertyType = sessionStorage.getItem('property_type') || ''; // 가져오기
+        const householdType = sessionStorage.getItem('household_type') || '';// 가져오기
+        const regionType = sessionStorage.getItem('region_type') || '';// 가져오기
+        
+        const requestData = {
+            property_type: propertyType,
+            household_type: householdType,
+            region_type: regionType,
+            direction_type: directionType,
+            category_type: categoryType,
+        };
 
- 
-import * as React from "react"
-import { Check, ChevronsUpDown } from "lucide-react"
- 
-import { cn } from "@/lib/utils"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
- 
-const wol = [
-  {
-    value: "남향",
-    label: "남향",
-  },
-  {
-    value: "북향",
-    label: "북향",
-  },
-  {
-    value: "동향",
-    label: "동향",
-  },
-  {
-    value: "서향",
-    label: "서향",
-  },
-]
+        try {
+            const csrftoken = getCSRFToken();
 
-const person = [
-  {
-    value: "상관없음",
-    label: "상관없음",
-  },
-  {
-    value: "신축",
-    label: "신축",
-  },
-  {
-    value: "구축",
-    label: "구축",
-  },
-]
+            if (!csrftoken) {
+                setError('CSRF 토큰을 찾을 수 없습니다.');
+                return;
+            }
 
-const region = [
-  {
-    value: "아파트",
-    label: "아파트",
-  },
-  {
-    value: "주택",
-    label: "주택",
-  },
-  
-]
+            const response = await fetch('http://localhost:8000/api/filter/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                body: JSON.stringify(requestData),
+            });
 
+            if (response.ok) {
+            const data = await response.json();
+            setApartments(data.apartments);
+            setError(null);
 
-export default function Data_1() {
-    const [open, setOpen] = React.useState(false)
-    const [value, setValue] = React.useState("")
+            const apartmentsString = JSON.stringify(data.apartments);
+            const encodedApartmentsString = encodeURIComponent(apartmentsString);
+            router.push(`/chu_list?apartments=${encodedApartmentsString}`);
 
-    const [open2, setOpen2] = React.useState(false)
-    const [value2, setValue2] = React.useState("")
+            } else if (response.status === 404) {
+                setError("조건에 맞는 아파트가 없습니다.");
 
-    const [open3, setOpen3] = React.useState(false)
-    const [value3, setValue3] = React.useState("")
-    
+            } else {
+                const errorData = await response.json();
+                setError(errorData.error || '필터링 요청 실패');
+            }
+        } catch (error: any) {
+            console.error('Error:', error);
+            setError(error.message || '서버와의 통신 중 오류가 발생했습니다.');
+        }
+    };
+
     return (
-        <div className="w-full h-{100vh} bg-[#FFF6FE] ">
-            <div className="px-5 pt-8 w-{100vw} h-{100vh}">
-                <p className="w-auto h-auto text-3xl ">선호하시는 집</p>
-                <p className="w-auto h-auto text-3xl font-bold">정보를 입력해주세요</p>
-                <p className="w-full h-auto mt-2 text-xs">해당 정보를 바탕으로 회원님께 딱 맞는 집을 분석해요</p>
-            
-                <p className="w-full h-auto mt-4 text-base font-semibold ">향 방향은 어떤 것을 선호하시나요?</p>
-                <Popover open={open} onOpenChange={setOpen}>
-                    <PopoverTrigger asChild>
-                        <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open}
-                        className="w-[330px] justify-between mt-2 border-0 rounded-3xl"
-                        >
-                        {value
-                            ? wol.find((wol) => wol.value === value)?.label
-                            : "남향"}
-                        <ChevronsUpDown className="opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[300px] p-0">
-                        <Command>
-                        <CommandInput placeholder="검색 향 방향..." />
-                        <CommandList>
-                            <CommandEmpty>No wol found.</CommandEmpty>
-                            <CommandGroup>
-                                {wol.map((wol) => (
-                                    <CommandItem
-                                    key={wol.value}
-                                    value={wol.value}
-                                    onSelect={(currentValue) => {
-                                        setValue(currentValue === value ? "" : currentValue)
-                                        setOpen(false)
-                                    }}
-                                    >
-                                    {wol.label}
-                                    <Check
-                                        className={cn(
-                                        "ml-auto",
-                                        value === wol.value ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        </CommandList>
-                        </Command>
-                    </PopoverContent>
-                    </Popover>
-                    <p className="w-[310px] h-auto mt-2 text-[11px] text-[#C299AB]">남향은 일조량이 많고 따뜻하며, 북향은 햇빛이 적고 시원하고, 동향은 아침 햇살이 좋으며, 서향은 오후 햇빛과 저녁 노을을ㅤ 즐길 수 있어요. 대부분 "남향"을 선호해요.</p>
-
-                    <p className="w-full h-auto mt-8 text-base font-semibold ">신축/구축 선호 여부는?</p>
-                    <Popover open={open2} onOpenChange={setOpen2}>
-                    <PopoverTrigger asChild>
-                        <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open2}
-                        className="w-[330px] justify-between mt-2 border-0 rounded-3xl "
-                        >
-                        {value2
-                            ? person.find((person) => person.value === value2)?.label
-                            : "상관없음"}
-                        <ChevronsUpDown className="opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[300px] p-0">
-                        <Command>
-                        <CommandInput placeholder="검색 지어진 시기..." />
-                        <CommandList>
-                            <CommandEmpty>No person found.</CommandEmpty>
-                            <CommandGroup>
-                                {person.map((person) => (
-                                    <CommandItem
-                                    key={person.value}
-                                    value2={person.value}
-                                    onSelect={(currentValue) => {
-                                        setValue2(currentValue === value ? "" : currentValue)
-                                        setOpen2(false)
-                                    }}
-                                    >
-                                    {person.label}
-                                    <Check
-                                        className={cn(
-                                        "ml-auto",
-                                        value2 === person.value ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        </CommandList>
-                        </Command>
-                    </PopoverContent>
-                    </Popover>
+         <div className="flex justify-center">
+        <div className="w-full h-{100vh} bg-[#FFF6FE]">
+          <div className="px-5 pt-8 w-{100vw} h-{100vh}">
+              <p className="w-auto h-auto text-3xl ">선호하시는 집</p>
+              <p className="w-auto h-auto text-3xl font-bold">정보를 입력해주세요</p>
+              <p className="w-full h-auto mt-2 text-xs">해당 정보를 바탕으로 회원님께 딱 맞는 집을 분석해요</p>
+          
+              <p className="w-full h-auto mt-20 text-base font-semibold ">향 방향은 어떤 것을 선호하시나요?</p>
+              <div className="w-full h-12 justify-between mt-2 border-0 rounded-3xl bg-white flex align-middle p-4">
+                <select value={directionType} onChange={(e) => setDirectionType(e.target.value)} className="w-full">
+                  <option value="">향 방향 선택</option>
+                  <option value="south">남향</option>
+                  <option value="north">북향</option>
+                </select>
+              </div>
+                
+              <p className="w-[310px] h-auto mt-2 text-[11px] text-[#C299AB]">남향은 일조량이 많고 따뜻하며, 북향은 햇빛이 적고 시원함을 즐길 수 있어요. 대부분 "남향"을 선호해요.</p>
 
 
-                    <p className="w-full h-auto mt-6 text-base font-semibold ">건물 유형 여부는?</p>
-                    <Popover open={open3} onOpenChange={setOpen3}>
-                    <PopoverTrigger asChild>
-                        <Button
-                        variant="outline"
-                        role="combobox"
-                        aria-expanded={open3}
-                        className="w-[330px] justify-between mt-2 border-0 rounded-3xl"
-                        >
-                        {value3
-                            ? region.find((region) => region.value === value3)?.label
-                            : "아파트"}
-                        <ChevronsUpDown className="opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[300px] p-0">
-                        <Command>
-                        <CommandInput placeholder="검색 지역종류..." />
-                        <CommandList>
-                            <CommandEmpty>No region found.</CommandEmpty>
-                            <CommandGroup>
-                                {region.map((region) => (
-                                    <CommandItem
-                                    key={region.value}
-                                    value={region.value}
-                                    onSelect={(currentValue) => {
-                                        setValue3(currentValue === value3 ? "" : currentValue)
-                                        setOpen3(false)
-                                    }}
-                                    >
-                                    {region.label}
-                                    <Check
-                                        className={cn(
-                                        "ml-auto",
-                                        value3 === region.value ? "opacity-100" : "opacity-0"
-                                        )}
-                                    />
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
-                        </CommandList>
-                        </Command>
-                    </PopoverContent>
-                    </Popover>
+              <p className="w-full h-auto mt-6 text-base font-semibold ">건물 유형 여부는?</p>
+              <div className="w-full h-12 justify-between mt-2 border-0 rounded-3xl bg-white flex align-middle p-4">
+                <select value={categoryType} onChange={(e) => setCategoryType(e.target.value)} className="w-full">
+                  <option value="">선호 건물 유형 선택</option>
+                  <option value="art">아파트</option>
+                  <option value="house">주택</option>
+                </select>
+              </div>
 
-                    <div className="w-full h-[15rem] pt-32">
-                        <Link href="/chu_list" className="w-32 h-12">
-                            <Button variant="outline" className="border-[#C299AB] w-full h-12 border-2 rounded-3xl text-[#FF70BA] font-extrabold">
-                                다음으로 넘어가기
-                            </Button>
-                        </Link>
-                    </div>
+              {error && <p style={{ color: 'red' }}>{error}</p>} {/* 에러 메시지 표시 */}
 
-            </div> 
+              <div className=" w-full h-[4.5rem] mt-40">
+                <Button variant="outline" className="border-[#C299AB] w-full h-12 border-2 rounded-3xl text-[#FF70BA] font-extrabold" onClick={handleSubmit}>
+                    다음으로 넘어가기
+                </Button>
+              </div>
+
+          </div> 
+        </div>
     </div>
-  );
+    );
 }
-
