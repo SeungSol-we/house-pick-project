@@ -40,35 +40,35 @@ export default function Main_page() {
 
     const [username, setUsername] = useState("");
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const csrfToken = getCsrfToken();
-                const response = await fetch('http://127.0.0.1:8000/api/userget/', {
-                    method: 'GET',
-                    credentials: 'include',  // 세션 쿠키 포함
-                    headers: {
-                        'X-CSRFToken': csrfToken,
-                    },
-                });
+    // useEffect(() => {
+    //     const fetchUserData = async () => {
+    //         try {
+    //             const csrfToken = getCsrfToken();
+    //             const response = await fetch('http://127.0.0.1:8000/api/userget/', {
+    //                 method: 'GET',
+    //                 credentials: 'include',  // 세션 쿠키 포함
+    //                 headers: {
+    //                 'X-CSRFToken': csrfToken,
+    //                 },
+    //             });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    setUsername(data.username);
-                } else if (response.status === 401) {
-                    console.error("사용자 인증 실패: 로그인 필요");
-                    // 로그인 페이지로 리다이렉트
-                    window.location.href = '/login';
-                } else {
-                    console.error("API 요청 실패:", response.status);
-                }
-            } catch (error) {
-                console.error("사용자 데이터 가져오기 오류:", error);
-            }
-        };
+    //             if (response.ok) {
+    //                 const data = await response.json();
+    //                 setUsername(data.username);
+    //             } else if (response.status === 401) {
+    //                 console.error("사용자 인증 실패: 로그인 필요");
+    //                 // 로그인 페이지로 리다이렉트
+    //                 window.location.href = '/login';
+    //             } else {
+    //                 console.error("API 요청 실패:", response.status);
+    //             }
+    //         } catch (error) {
+    //             console.error("사용자 데이터 가져오기 오류:", error);
+    //         }
+    //     };
 
-        fetchUserData();
-    }, []);
+    //     fetchUserData();
+    // }, []);
 
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">

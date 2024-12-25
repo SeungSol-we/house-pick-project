@@ -75,15 +75,27 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 
-@login_required(login_url=None)  # 리다이렉트 대신 None 설정
-@csrf_protect
-def get_user_data(request):
-    if request.method == "GET":
-        return JsonResponse({
-            'username': request.user.username,
-            'email': request.user.email,
-        })
-    return JsonResponse({'error': 'Method not allowed'}, status=405)
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
+
+# def api_login_required(view_func):
+#     def wrapper(request, *args, **kwargs):
+#         if not request.user.is_authenticated:
+#             return JsonResponse({'error': 'Authentication required'}, status=401)
+#         return view_func(request, *args, **kwargs)
+#     return wrapper
+
+# @csrf_protect
+# @api_login_required  # 로그인 필수 조건을 JSON 응답으로 처리
+# def get_user_data(request):
+#     if request.method == "GET":
+#         return JsonResponse({
+#             'username': request.user.username,
+#             'email': request.user.email,
+#         })
+#     return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 
 import pandas as pd
