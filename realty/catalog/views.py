@@ -167,10 +167,9 @@ def filter_apartments(request):
             return JsonResponse({
                 'success': True,
                 'apartments': main_apartments,
-                'redirect_url': reverse('main_page') + '?' + urlencode({
-                    'other_apartments': json.dumps(other_apartments, ensure_ascii=False)
+                'other_apartments': other_apartments
             }, status=200)
-            })
+            
 
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'message': "유효하지 않은 JSON 데이터입니다."}, status=400)
