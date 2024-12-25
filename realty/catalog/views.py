@@ -53,7 +53,7 @@ def validate_and_process_user(request):
                     login(request, user)
                     return JsonResponse({
                         'success': True,
-                        'message': "로그인에 성공했습니다.",
+                        'message': "",
                         'user': {
                             'username': user.username,
                             'email': user.email,

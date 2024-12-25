@@ -15,8 +15,6 @@ export default function Chu_List() {
     const apartmentsString = searchParams.get('apartments');
     const apartments = apartmentsString ? JSON.parse(decodeURIComponent(apartmentsString)) : []; // URL 디코딩 추가
 
-    console.log(apartments)
-
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">
       <div className="px-5 w-{100vw} h-{100vh}">

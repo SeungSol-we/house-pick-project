@@ -1,3 +1,5 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 
 import { Bell } from 'lucide-react';
@@ -11,54 +13,15 @@ import { Calculator } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { useEffect, useState } from 'react';
-
-export interface User {
-    username?: string;
-    email?: string;
-}
+import { useSearchParams } from 'next/navigation';
 
 export default function Main_page() {
-    let name  = ['역삼래미안', '한강타운', 'DMC롯데캐슬퍼스',]
-    let coment = [
-        '아파트, 10평, 다세대, 신축(2018~)',
-        '아파트, 11평, 다세대, 신축(2022~)',
-        '아파트, 8평, 다세대, 신축(2021~)',
-    ]
-    let date = [
-        '2018년 7월',
-        '2022년 10월',
-        '2021년 6월',
-    ]
-    let price = [
-        '6000/80',
-        '6033/50',
-        '5033/50',
-    ]
 
-    const [user, setUser] = useState(null); // user 상태를 null로 초기화
-    
+    const searchParams = useSearchParams();
+    const otherapartmentsString = searchParams.get('otherapartments');
+    const otherapartments = otherapartmentsString ? JSON.parse(decodeURIComponent(otherapartmentsString)) : []; // URL 디코딩 추가
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await fetch('/api/user/'); // trailing slash 추가
-                if (response.ok) {
-                    const data = await response.json();
-                    setUser(data); // 전체 user 데이터 설정
-                } else if (response.status === 401) {
-                    window.location.href = '/sign_in';
-                }
-                 else {
-                    console.error("유저 정보 가져오기 실패:", response.status);
-                }
-            } catch (error) {
-                console.error("유저 정보 가져오기 중 오류 발생:", error);
-            }
-        };
-
-        fetchUserData();
-    }, []);
+    console.log(otherapartments)
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">
         <div className="flex">
@@ -72,10 +35,7 @@ export default function Main_page() {
         </div>
         
         <div className="px-3 mt-5 w-{100vw} h-{100vh}">
-            {/* user가 null이 아니면 username을 표시하고, 그렇지 않으면 "로그인해주세요"를 표시합니다. */}
-                <p className="text-xl font-bold mb-5">
-                    {user?.username ?? "로그인해주세요"}
-                </p>
+            <p className="text-xl font-bold mb-5">표한빈님, 환영합니다!</p>
             <div className="flex w-full h-12 mt-2 px-4 bg-white rounded-full ">
                 <input className="w-[95%] h-12  text-xs text-red-300 focus:outline-none" placeholder="찾으시려는 집을 입력해 보세요..."/>
                 <div className="mt-[0.85rem] ">
@@ -130,24 +90,29 @@ export default function Main_page() {
                 <p className="text-xl font-bold ">회원님께 추천드리는 집</p>
                 <p className="text-xl font-bold ml-24 text-[#C299AB]">3개</p>
             </div>
-            {
-                name.map((a, i) => (
-                    <div className='w-full h-[7rem] bg-white flex mt-2 rounded-2xl' key={'a'+i}>
-                        <div className='w-20 h-20 m-3'>
-                            <Image className=' rounded-2xl' src="/apt.jpg" alt="아파트" width={100} height={100} ></Image>
-                        </div>
-                        <div className='pt-3'>
-                            <p className='font-bold text-xl'>{a}</p>
-                            <p className='text-xs text-[#4A3941] pt-1 font-bold'>{coment[i]}</p>
-                            <p className='text-xs text-[#4A3941] font-bold'>계약일: {date[i]}</p>
-                            <p className='font-bold text-[#FF70BA] pt-1 text-lg'>보증금/월세: {price[i]}</p>
-                        </div>
-                        <div className='w-12 text-[#F5E1EB] flex justify-center pt-10 text-2xl'>
-                            ★
-                        </div>
-                    </div>       
-                ))
-            }
+
+            {otherapartments.map((a:any, i:number) => (
+                <div className='w-full h-auto bg-white flex mt-4 rounded-2xl' key={i}>
+                    <div className='w-20 h-20 m-3'>
+                    {a.category === '아파트' || a.category === '주택' ? (
+                        <Image
+                            className='rounded-2xl'
+                            src={a.category === '아파트' ? '/apt.jpg' : '/house.jpeg'}
+                            alt="아파트 또는 주택"
+                            width={100}
+                            height={100}
+                        />
+                    ) : null}
+                    </div>
+                    <div className='pt-3 pb-3'>
+                        <p className='font-bold text-xl'>{a.homename}</p>
+                        <p className='text-xs text-[#4A3941] pt-1 font-bold'>{a.rent_type}, {a.category}, {a.direction}</p>
+                        <p className='text-xs text-[#4A3941] font-bold'>계약일: {a.계약년월}</p> {/* 계약년월 속성 이름 확인 */}
+                        <p className='font-bold text-[#FF70BA] pt-1 text-lg'>보증금/월세: {a.보증금} / {a.월세금}</p> {/* 보증금, 월세금 속성 이름 확인 */}
+                    </div>
+                    {/* ... */}
+                </div>
+            ))}
             <div className="w-full h-10">
 
             </div>
