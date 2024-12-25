@@ -1,9 +1,10 @@
 import os
+from urllib.parse import urlencode
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 import json
-from django.urls import path
+from django.urls import path, reverse
 
 from django.contrib.auth.backends import BaseBackend
 from django.contrib.auth.models import User
@@ -166,8 +167,10 @@ def filter_apartments(request):
             return JsonResponse({
                 'success': True,
                 'apartments': main_apartments,
-                'other_apartments': other_apartments
+                'redirect_url': reverse('main_page') + '?' + urlencode({
+                    'other_apartments': json.dumps(other_apartments, ensure_ascii=False)
             }, status=200)
+            })
 
         except json.JSONDecodeError:
             return JsonResponse({'success': False, 'message': "유효하지 않은 JSON 데이터입니다."}, status=400)
