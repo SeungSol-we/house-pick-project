@@ -154,7 +154,7 @@ def filter_apartments(request):
             if df.empty:
                 return JsonResponse({'success': False, 'message': "조건에 맞는 아파트가 없습니다."}, status=404)
 
-            # 필터링된 결과를 JSON 형식으로 반환 (7개 이하인 경우 모든 결과를 반환)
+            # 필터링된 결과를 JSON 형식으로 반환
             apartments = df.to_dict(orient='records')
 
             # 랜덤으로 7개 추출
@@ -181,8 +181,3 @@ def filter_apartments(request):
 
     else:
         return JsonResponse({'success': False, 'message': "POST 요청만 허용됩니다."}, status=405)
-
-
-
-
-
