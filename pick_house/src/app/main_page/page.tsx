@@ -168,28 +168,32 @@ export default function Main_page() {
                 <p className="text-xl font-bold ml-24 text-[#C299AB]">3개</p>
             </div>
 
-            {apartments.map((a:any, i:number) => (
-                <div className='w-full h-auto bg-white flex mt-4 rounded-2xl' key={i}>
-                    <div className='w-20 h-20 m-3'>
-                    {a.category === '아파트' || a.category === '주택' ? (
-                        <Image
-                            className='rounded-2xl'
-                            src={a.category === '아파트' ? '/apt.jpg' : '/house.jpeg'}
-                            alt="아파트 또는 주택"
-                            width={100}
-                            height={100}
-                        />
-                    ) : null}
-                    </div>
-                    <div className='pt-3 pb-3'>
-                        <p className='font-bold text-xl'>{a.homename}</p>
-                        <p className='text-xs text-[#4A3941] pt-1 font-bold'>{a.rent_type}, {a.category}, {a.direction}</p>
-                        <p className='text-xs text-[#4A3941] font-bold'>계약일: {a.계약년월}</p>
-                        <p className='font-bold text-[#FF70BA] pt-1 text-lg'>보증금/월세: {a.보증금} / {a.월세금}</p>
-                    </div>
-                    {/* ... */}
+            {Array.isArray(apartments) && apartments.slice(0, 3).map((a: any, i: number) => (
+            <div className='w-full h-auto bg-white flex mt-4 rounded-2xl' key={i}>
+                <div className='w-20 h-20 m-3'>
+                {a.category === '아파트' || a.category === '주택' ? (
+                    <Image
+                    className='rounded-2xl'
+                    src={a.category === '아파트' ? '/apt.jpg' : '/house.jpeg'}
+                    alt="아파트 또는 주택"
+                    width={100}
+                    height={100}
+                    />
+                ) : null}
                 </div>
+                <div className='pt-3 pb-3'>
+                <p className='font-bold text-xl'>{a.homename}</p>
+                <p className='text-xs text-[#4A3941] pt-1 font-bold'>
+                    {a.rent_type}, {a.category}, {a.direction}
+                </p>
+                <p className='text-xs text-[#4A3941] font-bold'>계약일: {a.계약년월}</p>
+                <p className='font-bold text-[#FF70BA] pt-1 text-lg'>
+                    보증금/월세: {a.보증금} / {a.월세금}
+                </p>
+                </div>
+            </div>
             ))}
+
             <div className="w-full h-10">
 
             </div>
