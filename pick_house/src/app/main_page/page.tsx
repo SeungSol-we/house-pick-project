@@ -13,19 +13,47 @@ import { Calculator } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-
 export default function Main_page() {
-    // const searchParams = useSearchParams();
-    // const apartmentsString = searchParams.get('apartments');
-    // const apartments = apartmentsString ? JSON.parse(decodeURIComponent(apartmentsString)) : []; // URL 디코딩 추가
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
-    // console.log(apartments);
+    const [apartments, setApartments] = useState<any[] | null>(null); // 초기값 null로 변경
+
+    useEffect(() => {
+    const apartmentsString = searchParams.get('apartments');
+        if (apartmentsString) {
+            try {
+                const decodedApartments = JSON.parse(decodeURIComponent(apartmentsString));
+                console.log("Main_page에서 받은 apartments 데이터:", decodedApartments);
+                setApartments(decodedApartments); // 상태 설정
+            } catch (error) {
+                console.error("apartments 파싱 에러:", error);
+                setApartments([]); // 에러 발생 시 빈 배열로 초기화
+            }
+        } else {
+            console.warn("apartments 데이터가 없습니다.");
+            setApartments([]); // apartmentsString이 없을 경우
+        }
+    }, [searchParams]);
+
+
+    // // 조건부 렌더링: apartments가 null이면 로딩 메시지 표시
+    // if (apartments === null) {
+    //     return <div>로딩 중...</div>;
+    // }
+
+    // // apartments가 빈 배열인 경우 처리, null 체크 추가
+    // if (apartments === null || (Array.isArray(apartments) && apartments.length === 0)) { 
+    //     return <div>데이터가 없습니다.</div>;
+    // }
+
+    console.log(apartments)
     
 
-    const apartments:any = [
+    const apartment:any = [
     {region_type: '서울특별시', homename: '중앙하이츠', rent_type: '전세', area_range: 59.85, 계약년월: 202412, category: '아파트', 보증금: "45,000", 월세금: "25", direction: "남향"},
     {region_type: '서울특별시', homename: '흑석한강센트레빌', rent_type: '전세', area_range: 84.84, 계약년월: 202411, category: '아파트', 보증금: "3,000", 월세금: "80", direction: "남향"},
     {region_type: '서울특별시', homename: '중앙하이츠', rent_type: '전세', area_range: 59.85, 계약년월: 202412, category: '아파트', 보증금: "16,000", 월세금: "30", direction: "남향"},
@@ -39,6 +67,7 @@ export default function Main_page() {
     };
 
     const [username, setUsername] = useState("");
+
 
     // useEffect(() => {
     //     const fetchUserData = async () => {
@@ -139,28 +168,32 @@ export default function Main_page() {
                 <p className="text-xl font-bold ml-24 text-[#C299AB]">3개</p>
             </div>
 
-            {apartments.map((a:any, i:number) => (
+            {Array.isArray(apartments) && apartments.slice(0, 3).map((a: any, i: number) => (
                 <div className='w-full h-auto bg-white flex mt-4 rounded-2xl' key={i}>
                     <div className='w-20 h-20 m-3'>
                     {a.category === '아파트' || a.category === '주택' ? (
                         <Image
-                            className='rounded-2xl'
-                            src={a.category === '아파트' ? '/apt.jpg' : '/house.jpeg'}
-                            alt="아파트 또는 주택"
-                            width={100}
-                            height={100}
+                        className='rounded-2xl'
+                        src={a.category === '아파트' ? '/apt.jpg' : '/house.jpeg'}
+                        alt="아파트 또는 주택"
+                        width={100}
+                        height={100}
                         />
                     ) : null}
                     </div>
                     <div className='pt-3 pb-3'>
-                        <p className='font-bold text-xl'>{a.homename}</p>
-                        <p className='text-xs text-[#4A3941] pt-1 font-bold'>{a.rent_type}, {a.category}, {a.direction}</p>
-                        <p className='text-xs text-[#4A3941] font-bold'>계약일: {a.계약년월}</p>
-                        <p className='font-bold text-[#FF70BA] pt-1 text-lg'>보증금/월세: {a.보증금} / {a.월세금}</p>
+                    <p className='font-bold text-xl'>{a.homename}</p>
+                    <p className='text-xs text-[#4A3941] pt-1 font-bold'>
+                        {a.rent_type}, {a.category}, {a.direction}
+                    </p>
+                    <p className='text-xs text-[#4A3941] font-bold'>계약일: {a.계약년월}</p>
+                    <p className='font-bold text-[#FF70BA] pt-1 text-lg'>
+                        보증금/월세: {a.보증금} / {a.월세금}
+                    </p>
                     </div>
-                    {/* ... */}
                 </div>
-            ))}
+                ))}
+
             <div className="w-full h-10">
 
             </div>

@@ -1,23 +1,45 @@
 
-"use client";
+"use client"
 
 import Link from 'next/link';
 import Image from 'next/image';
-
 import { Button } from "@/components/ui/button"
-
-
-import { useSearchParams } from 'next/navigation';
-
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function Chu_List() {
     const searchParams = useSearchParams();
-    const apartmentsString = searchParams.get('apartments');
-    const apartments = apartmentsString ? JSON.parse(decodeURIComponent(apartmentsString)) : [];
-    
-    // URL 디코딩 추가
+    const router = useRouter();
 
-    console.log(apartments)
+    const [apartments, setApartments] = useState<any[] | null>(null);
+
+    useEffect(() => {
+        const apartmentsString = searchParams.get('apartments');
+        if (apartmentsString) {
+            try {
+                const decodedApartments = JSON.parse(decodeURIComponent(apartmentsString));
+                console.log("Chu_List에서 받은 데이터:", decodedApartments);
+                setApartments(decodedApartments);
+            } catch (error) {
+                console.error("apartments 파싱 에러:", error);
+            }
+        }
+    }, [searchParams]);
+
+    if (apartments === null) {
+        return <div>로딩 중...</div>;
+    }
+
+    if (Array.isArray(apartments) && apartments.length === 0) {
+        return <div>데이터가 없습니다.</div>;
+    }
+
+    const handleNextClick = () => {
+        const encodedApartments = encodeURIComponent(JSON.stringify(apartments));
+        router.push(`/main_page?apartments=${encodedApartments}`); // 쿼리 매개변수로 데이터 전달
+        console.log(encodedApartments)
+    };
+
 
   return (
     <div className="w-full h-{100vh} bg-[#FFF6FE] ">
@@ -59,12 +81,10 @@ export default function Chu_List() {
       
       </div>
       
-      <div className="w-full h-24 flex justify-center align-items-center mt-4 bg-white">
-        <Link href="/main_page" className="w-[22rem] h-14 flex pt-3">
-          <Button variant="destructive" className="bg-[#FF70BA] w-[22rem] h-14 border-2 rounded-[2rem] text-white font-bold hover:bg-[#FF70BA]" >
+       <div className="w-full h-24 flex justify-center align-items-center mt-4 bg-white">
+          <Button variant="destructive" className="bg-[#FF70BA] w-[22rem] h-14 border-2 rounded-[2rem] text-white font-bold hover:bg-[#FF70BA]" onClick={handleNextClick}> {/* onClick 추가 */}
             다음으로
           </Button>
-        </Link>
       </div>
     </div>
   );
