@@ -135,7 +135,6 @@ def filter_apartments(request):
             # Clean column names (strip whitespace) and ensure correct types
             df.columns = df.columns.str.strip()  # Remove any leading/trailing spaces from column names
             df = df.drop_duplicates()
-
             df['area_range'] = pd.to_numeric(df['area_range'], errors='coerce')  # Ensure area_range is numeric
 
             # 필터링 조건 적용
