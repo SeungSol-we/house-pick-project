@@ -68,6 +68,35 @@ def validate_and_process_user(request):
 
     return JsonResponse({'success': False, 'message': "허용되지 않은 요청 방식입니다."}, status=405)
 
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
+
+# def api_login_required(view_func):
+#     def wrapper(request, *args, **kwargs):
+#         if not request.user.is_authenticated:
+#             return JsonResponse({'error': 'Authentication required'}, status=401)
+#         return view_func(request, *args, **kwargs)
+#     return wrapper
+
+# @csrf_protect
+# @api_login_required  # 로그인 필수 조건을 JSON 응답으로 처리
+# def get_user_data(request):
+#     if request.method == "GET":
+#         return JsonResponse({
+#             'username': request.user.username,
+#             'email': request.user.email,
+#         })
+#     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
 
 import pandas as pd
 from django.shortcuts import redirect, render
