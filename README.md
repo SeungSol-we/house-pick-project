@@ -1,1 +1,1 @@
-# django_project
+# house-pick-project
